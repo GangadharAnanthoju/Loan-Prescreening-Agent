@@ -3,6 +3,8 @@
 
 Automatically pre-screens loan applications using 4 chained AI agents. No database required — lending policy rules live in a simple JSON file.
 
+![Loan Pre-Screening Portal](assets/laon-screen.jpg)
+
 ---
 
 ## What It Does
