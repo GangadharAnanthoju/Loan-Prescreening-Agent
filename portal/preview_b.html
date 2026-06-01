@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview B — Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#07111e;min-height:100vh;color:#fff;display:flex;flex-direction:column}
+
+/* ── Top Bar ── */
+.topbar{height:58px;background:#040c18;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-logo{width:34px;height:34px;background:linear-gradient(135deg,#00c9a7,#0ea5e9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.tb-title{font-size:0.95rem;font-weight:700;letter-spacing:-0.2px}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,0.1)}
+.tb-sub{font-size:0.72rem;color:#475569;font-weight:500}
+.tb-right{display:flex;align-items:center;gap:10px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.6);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+.status-text{font-size:0.72rem;color:#10b981;font-weight:600}
+
+/* ── Three-col layout ── */
+.workspace{display:grid;grid-template-columns:280px 1fr 320px;flex:1;overflow:hidden}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar{background:#040c18;border-right:1px solid rgba(255,255,255,0.06);padding:20px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
+
+.sb-section-title{font-size:0.65rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#334155;margin-bottom:12px}
+
+.upload-card{background:rgba(255,255,255,0.03);border:1.5px dashed rgba(255,255,255,0.12);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:.2s}
+.upload-card:hover{border-color:#00c9a7;background:rgba(0,201,167,0.04)}
+.upload-card.has-file{border-style:solid;border-color:rgba(0,201,167,0.4);background:rgba(0,201,167,0.05)}
+.uc-icon{font-size:1.4rem;margin-bottom:8px}
+.uc-label{font-size:0.78rem;font-weight:600;color:#cbd5e1}
+.uc-file{font-size:0.68rem;color:#00c9a7;margin-top:6px;font-weight:500}
+.uc-hint{font-size:0.68rem;color:#475569;margin-top:4px}
+
+.btn-run{width:100%;padding:13px;background:linear-gradient(90deg,#00c9a7,#0ea5e9);border:none;border-radius:10px;color:#fff;font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:.3s}
+.btn-run:hover{box-shadow:0 8px 24px rgba(0,201,167,0.3);transform:translateY(-1px)}
+
+.scenario-btn{display:block;width:100%;text-align:left;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);cursor:pointer;transition:.2s;margin-bottom:6px}
+.scenario-btn:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.12)}
+.scn-name{font-size:0.78rem;font-weight:600;color:#e2e8f0;display:block}
+.scn-sub{font-size:0.65rem;color:#475569;display:block;margin-top:2px}
+.scn-tag{display:inline-block;margin-top:5px;padding:2px 8px;border-radius:6px;font-size:0.62rem;font-weight:700}
+.t-green{background:rgba(16,185,129,0.15);color:#10b981}
+.t-amber{background:rgba(245,158,11,0.15);color:#f59e0b}
+.t-red{background:rgba(239,68,68,0.15);color:#ef4444}
+
+/* ── CENTER FEED ── */
+.feed{padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+
+.feed-label{font-size:0.65rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#334155;margin-bottom:4px}
+
+.agent-block{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;transition:.3s}
+.agent-block.running{border-color:rgba(14,165,233,0.4);background:rgba(14,165,233,0.04)}
+.agent-block.done{border-color:rgba(0,201,167,0.2)}
+
+.ab-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none}
+.ab-header:hover{background:rgba(255,255,255,0.02)}
+.ab-left{display:flex;align-items:center;gap:12px}
+.ab-num{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#64748b;flex-shrink:0}
+.ab-num.done-num{background:rgba(0,201,167,0.15);color:#00c9a7}
+.ab-num.run-num{background:rgba(14,165,233,0.15);color:#0ea5e9;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.ab-info{}
+.ab-name{font-size:0.82rem;font-weight:700;color:#e2e8f0}
+.ab-role{font-size:0.68rem;color:#475569;margin-top:2px}
+.ab-right{display:flex;align-items:center;gap:10px}
+.ab-time{font-size:0.65rem;color:#334155;font-weight:500}
+.ab-status{padding:3px 10px;border-radius:8px;font-size:0.65rem;font-weight:700}
+.st-done{background:rgba(16,185,129,0.12);color:#10b981}
+.st-running{background:rgba(14,165,233,0.12);color:#0ea5e9}
+.st-pending{background:rgba(71,85,105,0.2);color:#475569}
+.ab-arrow{color:#334155;font-size:0.8rem;transition:.3s}
+
+.ab-body{padding:0 20px 18px;border-top:1px solid rgba(255,255,255,0.05)}
+.ab-output{font-size:0.72rem;color:#94a3b8;line-height:1.7;font-family:'Consolas',monospace;background:#060e1b;border-radius:8px;padding:14px;margin-top:14px;max-height:160px;overflow-y:auto;border:1px solid rgba(255,255,255,0.04);white-space:pre-wrap}
+
+.key-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.km{background:#060e1b;border-radius:8px;padding:10px 12px;border:1px solid rgba(255,255,255,0.05)}
+.km-label{font-size:0.62rem;color:#475569;font-weight:600;text-transform:uppercase;letter-spacing:0.8px}
+.km-value{font-size:0.9rem;font-weight:700;color:#e2e8f0;margin-top:4px}
+.km-value.green{color:#10b981}
+.km-value.amber{color:#f59e0b}
+.km-value.red{color:#ef4444}
+
+/* ── RIGHT PANEL ── */
+.right-panel{background:#040c18;border-left:1px solid rgba(255,255,255,0.06);padding:20px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
+
+.rp-section-title{font-size:0.65rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#334155;margin-bottom:14px}
+
+.risk-gauge{text-align:center;padding:24px 0}
+.rg-score{font-size:5rem;font-weight:800;line-height:1;background:linear-gradient(135deg,#10b981,#00c9a7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.rg-label{font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#334155;margin-top:8px}
+.rg-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin:16px 0}
+.rg-fill{height:100%;width:23%;background:linear-gradient(90deg,#10b981,#f59e0b,#ef4444);border-radius:4px}
+.rg-range{display:flex;justify-content:space-between;font-size:0.6rem;color:#334155;font-weight:600}
+
+.policy-checks{display:flex;flex-direction:column;gap:6px}
+.pc-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)}
+.pc-label{font-size:0.72rem;color:#94a3b8}
+.pc-result{font-size:0.72rem;font-weight:700}
+.pc-pass{color:#10b981}
+.pc-fail{color:#ef4444}
+
+.verdict-card{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:14px;padding:20px;text-align:center}
+.vc-level{font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#10b981;margin-bottom:8px}
+.vc-rec{font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:14px}
+.vc-btns{display:flex;gap:8px}
+.vb-approve{flex:1;padding:13px;background:linear-gradient(90deg,#10b981,#059669);border:none;border-radius:10px;color:#fff;font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:.3s}
+.vb-approve:hover{box-shadow:0 6px 16px rgba(16,185,129,0.3);transform:translateY(-1px)}
+.vb-decline{flex:1;padding:13px;background:transparent;border:1px solid rgba(239,68,68,0.4);border-radius:10px;color:#ef4444;font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:.3s}
+.vb-decline:hover{background:rgba(239,68,68,0.1)}
+
+.case-info{display:flex;flex-direction:column;gap:6px}
+.ci-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,0.025);border-radius:8px}
+.ci-label{font-size:0.68rem;color:#475569}
+.ci-value{font-size:0.72rem;font-weight:600;color:#e2e8f0}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">🏦</div>
+    <div class="tb-title">Loan Pre-Screening Portal</div>
+    <div class="tb-sep"></div>
+    <div class="tb-sub">Microsoft Foundry · Multi-Agent AI</div>
+  </div>
+  <div class="tb-right">
+    <div class="status-dot"></div>
+    <div class="status-text">4 Agents Ready</div>
+  </div>
+</div>
+
+<div class="workspace">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="sb-section-title">Documents</div>
+      <div class="upload-card has-file" style="margin-bottom:10px">
+        <div class="uc-icon">📄</div>
+        <div class="uc-label">Loan Application</div>
+        <div class="uc-file">LOAN_APP_001_GOOD.txt</div>
+      </div>
+      <div class="upload-card has-file">
+        <div class="uc-icon">💰</div>
+        <div class="uc-label">Income Verification</div>
+        <div class="uc-file">INCOME_001_GOOD.txt</div>
+      </div>
+    </div>
+
+    <button class="btn-run">▶ Run Pre-Screening</button>
+
+    <div>
+      <div class="sb-section-title">Test Scenarios</div>
+      <button class="scenario-btn">
+        <span class="scn-name">Michael Johnson</span>
+        <span class="scn-sub">Credit 740 · DTI 9.9%</span>
+        <span class="scn-tag t-green">LOW → Approve</span>
+      </button>
+      <button class="scenario-btn">
+        <span class="scn-name">Sarah Chen</span>
+        <span class="scn-sub">Self-employed · DTI 39.7%</span>
+        <span class="scn-tag t-amber">MEDIUM → Refer</span>
+      </button>
+      <button class="scenario-btn">
+        <span class="scn-name">Robert Williams</span>
+        <span class="scn-sub">Credit 595 · DTI 44%</span>
+        <span class="scn-tag t-red">HIGH → Decline</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FEED -->
+  <div class="feed">
+    <div class="feed-label">Agent Execution Log</div>
+
+    <!-- Agent 1 -->
+    <div class="agent-block done">
+      <div class="ab-header">
+        <div class="ab-left">
+          <div class="ab-num done-num">01</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-doc-extractor</div>
+            <div class="ab-role">Document Extraction Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-time">2.3s</span>
+          <span class="ab-status st-done">Complete</span>
+          <span class="ab-arrow">▼</span>
+        </div>
+      </div>
+      <div class="ab-body">
+        <div class="key-metrics">
+          <div class="km"><div class="km-label">Applicant</div><div class="km-value">M. Johnson</div></div>
+          <div class="km"><div class="km-label">Credit Score</div><div class="km-value green">740</div></div>
+          <div class="km"><div class="km-label">Loan Amount</div><div class="km-value">$340K</div></div>
+        </div>
+        <div class="ab-output">Applicant Name: Michael Johnson
+Date of Birth: 1985-03-14 · SSN Last 4: 7842
+Loan Amount: $340,000 · Type: Conventional · Term: 30yr
+Property Value: $350,000
+Credit Score (Self-Reported): 740
+Monthly Income (Self-Reported): $8,500
+Monthly Debt Payments: $850
+Employment: 5 years @ TechCorp Inc.
+Verified Monthly Income: $8,416.67</div>
+      </div>
+    </div>
+
+    <!-- Agent 2 -->
+    <div class="agent-block done">
+      <div class="ab-header">
+        <div class="ab-left">
+          <div class="ab-num done-num">02</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-financial-analyzer</div>
+            <div class="ab-role">Financial Analysis Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-time">3.1s</span>
+          <span class="ab-status st-done">Complete</span>
+          <span class="ab-arrow">▼</span>
+        </div>
+      </div>
+      <div class="ab-body">
+        <div class="key-metrics">
+          <div class="km"><div class="km-label">DTI Ratio</div><div class="km-value green">9.9%</div></div>
+          <div class="km"><div class="km-label">LTV Ratio</div><div class="km-value green">80.0%</div></div>
+          <div class="km"><div class="km-label">Income Match</div><div class="km-value green">PASS</div></div>
+        </div>
+        <div class="ab-output">DTI: ($850 ÷ $8,416.67) × 100 = 9.9% → Excellent ✓
+LTV: ($340,000 ÷ $350,000) × 100 = 80.0% → No PMI ✓
+Income Consistency: |$8,500 − $8,416.67| ÷ $8,416.67 = 0.99% → CONSISTENT ✓
+Est. Monthly Payment: $2,262 (at 7.0% / 30yr)
+Housing Ratio: 26.9% → Affordable ✓</div>
+      </div>
+    </div>
+
+    <!-- Agent 3 -->
+    <div class="agent-block done">
+      <div class="ab-header">
+        <div class="ab-left">
+          <div class="ab-num done-num">03</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-risk-scorer</div>
+            <div class="ab-role">Risk Assessment Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-time">4.2s</span>
+          <span class="ab-status st-done">Complete</span>
+          <span class="ab-arrow">▼</span>
+        </div>
+      </div>
+      <div class="ab-body">
+        <div class="key-metrics">
+          <div class="km"><div class="km-label">Risk Score</div><div class="km-value green">23/100</div></div>
+          <div class="km"><div class="km-label">Risk Level</div><div class="km-value green">LOW</div></div>
+          <div class="km"><div class="km-label">Decision</div><div class="km-value green">APPROVE</div></div>
+        </div>
+        <div class="ab-output">POLICY COMPLIANCE: ALL PASSED ✓
+  Credit Score: 740 ≥ 620 → PASS
+  DTI: 9.9% ≤ 43% → PASS
+  LTV: 80% ≤ 97% → PASS
+  Loan Amount: $340K ≤ $650K → PASS
+  Employment: 5yr ≥ 2yr → PASS
+
+RISK SCORE BREAKDOWN:
+  Credit (740): +0 pts
+  DTI (9.9%):   +0 pts
+  Income:        +0 pts
+  Employment:    +0 pts
+  LTV:           +0 pts
+  ──────────────────
+  TOTAL: 23/100 — LOW RISK</div>
+      </div>
+    </div>
+
+    <!-- Agent 4 -->
+    <div class="agent-block">
+      <div class="ab-header">
+        <div class="ab-left">
+          <div class="ab-num">04</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-notifier</div>
+            <div class="ab-role">Email Notification Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-status st-pending">Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <div>
+      <div class="rp-section-title">Risk Score</div>
+      <div class="risk-gauge">
+        <div class="rg-score">23</div>
+        <div class="rg-label">out of 100</div>
+        <div class="rg-bar"><div class="rg-fill"></div></div>
+        <div class="rg-range"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="rp-section-title">Policy Checks</div>
+      <div class="policy-checks">
+        <div class="pc-item"><span class="pc-label">Credit Score (≥620)</span><span class="pc-result pc-pass">740 ✓</span></div>
+        <div class="pc-item"><span class="pc-label">DTI (≤43%)</span><span class="pc-result pc-pass">9.9% ✓</span></div>
+        <div class="pc-item"><span class="pc-label">LTV (≤97%)</span><span class="pc-result pc-pass">80% ✓</span></div>
+        <div class="pc-item"><span class="pc-label">Loan Amount (≤$650K)</span><span class="pc-result pc-pass">$340K ✓</span></div>
+        <div class="pc-item"><span class="pc-label">Employment (≥2yr)</span><span class="pc-result pc-pass">5yr ✓</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="rp-section-title">Case Info</div>
+      <div class="case-info">
+        <div class="ci-row"><span class="ci-label">Case ID</span><span class="ci-value">LOAN-DEMO</span></div>
+        <div class="ci-row"><span class="ci-label">Applicant</span><span class="ci-value">Michael Johnson</span></div>
+        <div class="ci-row"><span class="ci-label">Loan Type</span><span class="ci-value">Conventional 30yr</span></div>
+        <div class="ci-row"><span class="ci-label">Amount</span><span class="ci-value">$340,000</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="rp-section-title">Underwriter Decision</div>
+      <div class="verdict-card">
+        <div class="vc-level">AI Recommendation</div>
+        <div class="vc-rec">✅ APPROVE</div>
+        <div class="vc-btns">
+          <button class="vb-approve">Approve</button>
+          <button class="vb-decline">Decline</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

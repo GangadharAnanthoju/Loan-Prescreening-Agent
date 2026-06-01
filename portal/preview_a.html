@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview A — Fintech Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#060d1a;min-height:100vh;color:#fff}
+
+/* ── Header ── */
+.header{background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.07);padding:18px 40px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#00c9a7,#0ea5e9);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.logo-text{font-size:1.1rem;font-weight:700;letter-spacing:-0.3px}
+.logo-sub{font-size:0.72rem;color:#64748b;font-weight:400;margin-top:1px}
+.badge{background:rgba(0,201,167,0.12);border:1px solid rgba(0,201,167,0.3);color:#00c9a7;font-size:0.72rem;padding:5px 14px;border-radius:20px;font-weight:600}
+
+/* ── Layout ── */
+.layout{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 73px)}
+
+/* ── Left Panel ── */
+.left-panel{padding:28px;border-right:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.015);display:flex;flex-direction:column;gap:24px}
+
+.panel-title{font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#475569;margin-bottom:14px}
+
+.upload-zone{border:1.5px dashed rgba(255,255,255,0.15);border-radius:14px;padding:22px;transition:.3s;cursor:pointer;text-align:center;background:rgba(255,255,255,0.02)}
+.upload-zone:hover{border-color:#00c9a7;background:rgba(0,201,167,0.04)}
+.upload-zone.filled{border-color:#00c9a7;background:rgba(0,201,167,0.06);border-style:solid}
+.upload-zone .uz-icon{font-size:1.8rem;margin-bottom:8px}
+.upload-zone .uz-label{font-size:0.8rem;font-weight:600;color:#e2e8f0;margin-bottom:4px}
+.upload-zone .uz-sub{font-size:0.72rem;color:#64748b}
+.upload-zone .uz-file{font-size:0.75rem;color:#00c9a7;margin-top:6px;font-weight:500}
+
+.btn-submit{width:100%;padding:14px;background:linear-gradient(90deg,#00c9a7,#0ea5e9);border:none;border-radius:12px;color:#fff;font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:.3s}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,201,167,0.3)}
+
+.scenarios-list{display:flex;flex-direction:column;gap:8px}
+.scenario-item{padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.025);cursor:pointer;transition:.2s}
+.scenario-item:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.15)}
+.scenario-item .s-label{font-size:0.8rem;font-weight:600;color:#e2e8f0}
+.scenario-item .s-sub{font-size:0.72rem;color:#64748b;margin-top:3px}
+.scenario-item .s-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.65rem;font-weight:700;margin-top:6px}
+.tag-green{background:rgba(16,185,129,0.15);color:#10b981}
+.tag-amber{background:rgba(245,158,11,0.15);color:#f59e0b}
+.tag-red{background:rgba(239,68,68,0.15);color:#ef4444}
+
+/* ── Right Panel ── */
+.right-panel{padding:32px 40px;display:flex;flex-direction:column;gap:32px;overflow-y:auto}
+
+/* ── Pipeline ── */
+.pipeline-section{}
+.pipeline-label{font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#475569;margin-bottom:24px}
+
+.pipeline{display:flex;align-items:center;gap:0}
+.pipe-node{display:flex;flex-direction:column;align-items:center;position:relative;flex:1}
+.pipe-dot{width:64px;height:64px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:rgba(255,255,255,0.04);transition:.4s;position:relative;z-index:1}
+.pipe-dot.done{border-color:#00c9a7;background:rgba(0,201,167,0.15);box-shadow:0 0 20px rgba(0,201,167,0.2)}
+.pipe-dot.active{border-color:#0ea5e9;background:rgba(14,165,233,0.15);animation:glow 1.5s infinite}
+.pipe-dot.waiting{border-color:#475569}
+@keyframes glow{0%,100%{box-shadow:0 0 15px rgba(14,165,233,0.3)}50%{box-shadow:0 0 30px rgba(14,165,233,0.6)}}
+.pipe-name{font-size:0.72rem;font-weight:600;color:#94a3b8;margin-top:10px;text-align:center;max-width:90px;line-height:1.3}
+.pipe-status{font-size:0.65rem;color:#475569;margin-top:4px;font-weight:500}
+.pipe-status.ok{color:#10b981}
+.pipe-status.running{color:#0ea5e9}
+
+.pipe-line{flex:1;height:2px;background:rgba(255,255,255,0.08);position:relative;top:-16px;max-width:80px;margin:0 -10px}
+.pipe-line.done{background:linear-gradient(90deg,#00c9a7,#0ea5e9)}
+.pipe-line.active{background:linear-gradient(90deg,#00c9a7,#0ea5e9);animation:flow 1.5s infinite}
+@keyframes flow{0%{opacity:0.4}50%{opacity:1}100%{opacity:0.4}}
+
+/* ── Risk Score Card ── */
+.risk-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center}
+.risk-score-display{text-align:center}
+.risk-number{font-size:4rem;font-weight:800;line-height:1;background:linear-gradient(135deg,#10b981,#00c9a7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.risk-denom{font-size:0.85rem;color:#475569;font-weight:500;margin-top:4px}
+.risk-bar-section{}
+.risk-bar-label{font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#475569;margin-bottom:10px}
+.risk-bar-track{height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;margin-bottom:14px}
+.risk-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#10b981,#f59e0b,#ef4444);width:23%}
+.risk-indicators{display:flex;justify-content:space-between;font-size:0.65rem;color:#475569;font-weight:600}
+.risk-details{display:flex;flex-direction:column;gap:8px}
+.risk-detail-item{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.risk-detail-item .rd-label{font-size:0.75rem;color:#64748b}
+.risk-detail-item .rd-value{font-size:0.8rem;font-weight:600;color:#e2e8f0}
+.risk-verdict{background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:14px 20px;text-align:center}
+.rv-level{font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#10b981;margin-bottom:6px}
+.rv-rec{font-size:1.1rem;font-weight:700;color:#fff}
+
+/* ── Agent Outputs ── */
+.agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.agent-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;transition:.3s}
+.agent-card.active-card{border-color:rgba(14,165,233,0.4);background:rgba(14,165,233,0.05)}
+.agent-card.done-card{border-color:rgba(0,201,167,0.25)}
+.agent-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.agent-card-header .ac-left{display:flex;align-items:center;gap:10px}
+.agent-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.agent-icon.green{background:rgba(0,201,167,0.15)}
+.agent-name{font-size:0.82rem;font-weight:700;color:#e2e8f0}
+.agent-role{font-size:0.68rem;color:#64748b;margin-top:2px}
+.agent-badge{font-size:0.65rem;font-weight:700;padding:3px 10px;border-radius:10px}
+.badge-done{background:rgba(16,185,129,0.15);color:#10b981}
+.badge-pending{background:rgba(71,85,105,0.3);color:#64748b}
+.agent-output{font-size:0.72rem;color:#94a3b8;line-height:1.6;font-family:'Consolas',monospace;background:#080f1c;border-radius:8px;padding:12px;max-height:120px;overflow-y:auto;border:1px solid rgba(255,255,255,0.05)}
+
+/* ── Decision Bar ── */
+.decision-bar{background:rgba(255,255,255,0.03);border:1px solid rgba(245,158,11,0.3);border-radius:16px;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.decision-bar .db-text{}
+.db-title{font-size:1rem;font-weight:700;color:#f59e0b;margin-bottom:4px}
+.db-sub{font-size:0.8rem;color:#64748b}
+.decision-btns{display:flex;gap:12px;flex-shrink:0}
+.btn-approve{padding:14px 32px;background:linear-gradient(90deg,#10b981,#059669);border:none;border-radius:10px;color:#fff;font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:.3s}
+.btn-approve:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,185,129,0.3)}
+.btn-decline{padding:14px 32px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:10px;color:#ef4444;font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:.3s}
+.btn-decline:hover{background:rgba(239,68,68,0.25)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🏦</div>
+    <div>
+      <div class="logo-text">Loan Pre-Screening Portal</div>
+      <div class="logo-sub">Microsoft Foundry Multi-Agent Workflow</div>
+    </div>
+  </div>
+  <span class="badge">⚡ 4 AI Agents Active</span>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT -->
+  <div class="left-panel">
+    <div>
+      <div class="panel-title">Upload Documents</div>
+      <div class="upload-zone filled" style="margin-bottom:12px">
+        <div class="uz-icon">📄</div>
+        <div class="uz-label">Loan Application</div>
+        <div class="uz-file">LOAN_APP_001_GOOD.txt</div>
+      </div>
+      <div class="upload-zone filled">
+        <div class="uz-icon">💰</div>
+        <div class="uz-label">Income Verification</div>
+        <div class="uz-file">INCOME_001_GOOD.txt</div>
+      </div>
+    </div>
+
+    <button class="btn-submit">🚀 Start Pre-Screening</button>
+
+    <div>
+      <div class="panel-title">Test Scenarios</div>
+      <div class="scenarios-list">
+        <div class="scenario-item">
+          <div class="s-label">Michael Johnson</div>
+          <div class="s-sub">Credit 740, DTI 9.9%, LTV 80%</div>
+          <span class="s-tag tag-green">LOW RISK → Approve</span>
+        </div>
+        <div class="scenario-item">
+          <div class="s-label">Sarah Chen</div>
+          <div class="s-sub">Self-employed, income mismatch, DTI 39.7%</div>
+          <span class="s-tag tag-amber">MEDIUM RISK → Refer</span>
+        </div>
+        <div class="scenario-item">
+          <div class="s-label">Robert Williams</div>
+          <div class="s-sub">Credit 595, DTI 44%, LTV 97.5%</div>
+          <span class="s-tag tag-red">HIGH RISK → Decline</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-panel">
+
+    <!-- Pipeline -->
+    <div class="pipeline-section">
+      <div class="pipeline-label">Agent Pipeline</div>
+      <div class="pipeline">
+        <div class="pipe-node">
+          <div class="pipe-dot done">📄</div>
+          <div class="pipe-name">Document Extractor</div>
+          <div class="pipe-status ok">✓ Complete</div>
+        </div>
+        <div class="pipe-line done"></div>
+        <div class="pipe-node">
+          <div class="pipe-dot done">📊</div>
+          <div class="pipe-name">Financial Analyzer</div>
+          <div class="pipe-status ok">✓ Complete</div>
+        </div>
+        <div class="pipe-line done"></div>
+        <div class="pipe-node">
+          <div class="pipe-dot done">⚖️</div>
+          <div class="pipe-name">Risk Scorer</div>
+          <div class="pipe-status ok">✓ Complete</div>
+        </div>
+        <div class="pipe-line waiting"></div>
+        <div class="pipe-node">
+          <div class="pipe-dot waiting">📧</div>
+          <div class="pipe-name">Notifier</div>
+          <div class="pipe-status">Pending</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk Score -->
+    <div class="risk-card">
+      <div class="risk-score-display">
+        <div class="risk-number">23</div>
+        <div class="risk-denom">out of 100</div>
+      </div>
+      <div class="risk-bar-section">
+        <div class="risk-bar-label">Risk Score</div>
+        <div class="risk-bar-track"><div class="risk-bar-fill"></div></div>
+        <div class="risk-indicators"><span>0 Low</span><span>50 Medium</span><span>100 High</span></div>
+      </div>
+      <div>
+        <div class="risk-details" style="margin-bottom:14px">
+          <div class="risk-detail-item"><span class="rd-label">Credit Score</span><span class="rd-value">740 ✓</span></div>
+          <div class="risk-detail-item"><span class="rd-label">DTI Ratio</span><span class="rd-value">9.9% ✓</span></div>
+          <div class="risk-detail-item"><span class="rd-label">LTV Ratio</span><span class="rd-value">80% ✓</span></div>
+          <div class="risk-detail-item"><span class="rd-label">Employment</span><span class="rd-value">5 yrs ✓</span></div>
+        </div>
+        <div class="risk-verdict">
+          <div class="rv-level">Recommendation</div>
+          <div class="rv-rec">✅ APPROVE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent Cards -->
+    <div class="agents-grid">
+      <div class="agent-card done-card">
+        <div class="agent-card-header">
+          <div class="ac-left">
+            <div class="agent-icon green">📄</div>
+            <div>
+              <div class="agent-name">loan-doc-extractor</div>
+              <div class="agent-role">Document Extraction</div>
+            </div>
+          </div>
+          <span class="agent-badge badge-done">Done</span>
+        </div>
+        <div class="agent-output">Applicant Name: Michael Johnson
+Credit Score: 740
+Loan Amount: $340,000
+Loan Type: Conventional (30yr)
+Monthly Income: $8,500
+Monthly Debt: $850
+Employment: 5 years</div>
+      </div>
+
+      <div class="agent-card done-card">
+        <div class="agent-card-header">
+          <div class="ac-left">
+            <div class="agent-icon green">📊</div>
+            <div>
+              <div class="agent-name">loan-financial-analyzer</div>
+              <div class="agent-role">Financial Analysis</div>
+            </div>
+          </div>
+          <span class="agent-badge badge-done">Done</span>
+        </div>
+        <div class="agent-output">DTI Ratio: 9.9% → Excellent ✓
+LTV Ratio: 80.0% → No PMI ✓
+Income Consistency: CONSISTENT ✓
+Est. Monthly Payment: $2,262
+Housing Ratio: 26.6% → Affordable ✓</div>
+      </div>
+
+      <div class="agent-card done-card">
+        <div class="agent-card-header">
+          <div class="ac-left">
+            <div class="agent-icon green">⚖️</div>
+            <div>
+              <div class="agent-name">loan-risk-scorer</div>
+              <div class="agent-role">Risk Assessment</div>
+            </div>
+          </div>
+          <span class="agent-badge badge-done">Done</span>
+        </div>
+        <div class="agent-output">TOTAL RISK SCORE: 23/100
+Risk Level: LOW
+All policy checks: PASSED
+Credit Score: PASS (740 ≥ 620)
+DTI: PASS (9.9% ≤ 43%)
+LTV: PASS (80% ≤ 97%)
+Recommendation: APPROVE</div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-card-header">
+          <div class="ac-left">
+            <div class="agent-icon">📧</div>
+            <div>
+              <div class="agent-name">loan-notifier</div>
+              <div class="agent-role">Email Notification</div>
+            </div>
+          </div>
+          <span class="agent-badge badge-pending">Pending</span>
+        </div>
+        <div class="agent-output" style="color:#475569">Waiting for underwriter decision...</div>
+      </div>
+    </div>
+
+    <!-- Decision Bar -->
+    <div class="decision-bar">
+      <div class="db-text">
+        <div class="db-title">🔐 Underwriter Decision Required</div>
+        <div class="db-sub">Risk assessment complete. Review findings and submit your decision.</div>
+      </div>
+      <div class="decision-btns">
+        <button class="btn-approve">✅ Approve</button>
+        <button class="btn-decline">❌ Decline</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

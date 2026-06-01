@@ -1,867 +1,765 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Pre-Screening Portal</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Pre-Screening Portal</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+button,input,select,textarea{font-family:'Montserrat',sans-serif}
+body{font-family:'Montserrat',sans-serif;background:#07111e;min-height:100vh;color:#fff;display:flex;flex-direction:column}
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #0a1628 0%, #0d2137 50%, #0a3352 100%);
-            min-height: 100vh;
-            color: #fff;
-        }
+/* ── TOP BAR ── */
+.topbar{height:56px;background:#040c18;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;z-index:10}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-logo{width:32px;height:32px;background:linear-gradient(135deg,#00c9a7,#0ea5e9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.tb-title{font-size:0.92rem;font-weight:700;letter-spacing:-0.2px}
+.tb-sep{width:1px;height:18px;background:rgba(255,255,255,0.1)}
+.tb-sub{font-size:0.68rem;color:#475569;font-weight:500}
+.tb-right{display:flex;align-items:center;gap:8px}
+.agent-pills{display:flex;gap:6px}
+.ap{font-size:0.6rem;font-weight:600;padding:3px 8px;border-radius:8px;background:rgba(255,255,255,0.05);color:#475569;border:1px solid rgba(255,255,255,0.07);transition:.3s}
+.ap.ap-active{background:rgba(14,165,233,0.12);color:#0ea5e9;border-color:rgba(14,165,233,0.3);animation:ap-pulse 1.5s infinite}
+.ap.ap-done{background:rgba(0,201,167,0.1);color:#00c9a7;border-color:rgba(0,201,167,0.3)}
+@keyframes ap-pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+/* ── WORKSPACE ── */
+.workspace{display:grid;grid-template-columns:272px 1fr 300px;flex:1;overflow:hidden;height:calc(100vh - 56px)}
 
-        header { text-align: center; padding: 40px 0; }
+/* ── SIDEBAR ── */
+.sidebar{background:#040c18;border-right:1px solid rgba(255,255,255,0.06);padding:18px;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
+.sl{font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1e3a5f;margin-bottom:10px}
 
-        header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, #00c9a7, #0ea5e9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
+.upload-card{border:1.5px dashed rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:.25s;background:rgba(255,255,255,0.02);position:relative;overflow:hidden}
+.upload-card:hover{border-color:#00c9a7;background:rgba(0,201,167,0.04)}
+.upload-card.filled{border-style:solid;border-color:rgba(0,201,167,0.45);background:rgba(0,201,167,0.05)}
+.upload-card input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.uc-icon{font-size:1.5rem;margin-bottom:7px}
+.uc-label{font-size:0.76rem;font-weight:600;color:#cbd5e1}
+.uc-hint{font-size:0.65rem;color:#334155;margin-top:3px}
+.uc-file{font-size:0.68rem;color:#00c9a7;font-weight:600;margin-top:5px}
 
-        header p { color: #94a3b8; font-size: 1.1rem; }
+.btn-run{width:100%;padding:13px;background:linear-gradient(90deg,#00c9a7,#0ea5e9);border:none;border-radius:10px;color:#fff;font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:.3s;letter-spacing:.3px}
+.btn-run:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,201,167,0.3)}
+.btn-run:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
-        .badge {
-            display: inline-block;
-            background: rgba(0, 201, 167, 0.15);
-            border: 1px solid rgba(0, 201, 167, 0.4);
-            color: #00c9a7;
-            font-size: 0.8rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-top: 10px;
-        }
+.scn-btn{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);cursor:pointer;transition:.2s;margin-bottom:6px;font-family:'Montserrat',sans-serif}
+.scn-btn:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.12)}
+.scn-name{font-size:0.76rem;font-weight:600;color:#e2e8f0;display:block;font-family:'Montserrat',sans-serif}
+.scn-sub{font-size:0.63rem;color:#475569;display:block;margin-top:2px;font-family:'Montserrat',sans-serif}
+.scn-tag{display:inline-block;margin-top:5px;padding:2px 7px;border-radius:6px;font-size:0.6rem;font-weight:700;font-family:'Montserrat',sans-serif}
+.tg{background:rgba(16,185,129,0.14);color:#10b981}
+.ta{background:rgba(245,158,11,0.14);color:#f59e0b}
+.tr{background:rgba(239,68,68,0.14);color:#ef4444}
 
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 30px;
-        }
+/* ── FEED ── */
+.feed{padding:20px 22px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.feed-hdr{font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1e3a5f}
 
-        @media (max-width: 900px) {
-            .main-content { grid-template-columns: 1fr; }
-        }
+.agent-block{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;transition:.3s}
+.agent-block.ab-active{border-color:rgba(14,165,233,0.4);background:rgba(14,165,233,0.035)}
+.agent-block.ab-done{border-color:rgba(0,201,167,0.2)}
+.agent-block.ab-error{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.03)}
 
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
+.ab-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;gap:10px}
+.ab-hdr:hover{background:rgba(255,255,255,0.02)}
+.ab-left{display:flex;align-items:center;gap:11px;min-width:0}
+.ab-num{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:#334155;flex-shrink:0;transition:.3s}
+.ab-num.n-active{background:rgba(14,165,233,0.15);color:#0ea5e9;animation:np 1.5s infinite}
+.ab-num.n-done{background:rgba(0,201,167,0.13);color:#00c9a7}
+.ab-num.n-error{background:rgba(239,68,68,0.13);color:#ef4444}
+@keyframes np{0%,100%{opacity:1}50%{opacity:.4}}
+.ab-info{min-width:0}
+.ab-name{font-size:0.8rem;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ab-role{font-size:0.63rem;color:#334155;margin-top:2px}
+.ab-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ab-time{font-size:0.62rem;color:#1e3a5f;font-weight:500}
+.ab-badge{padding:2px 8px;border-radius:7px;font-size:0.62rem;font-weight:700}
+.bd-pending{background:rgba(71,85,105,0.18);color:#334155}
+.bd-active{background:rgba(14,165,233,0.13);color:#0ea5e9}
+.bd-done{background:rgba(16,185,129,0.12);color:#10b981}
+.bd-error{background:rgba(239,68,68,0.12);color:#ef4444}
+.ab-chevron{color:#1e3a5f;font-size:.75rem;transition:transform .25s}
+.ab-chevron.open{transform:rotate(180deg)}
 
-        .section-title {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #e2e8f0;
-        }
+.ab-body{border-top:1px solid rgba(255,255,255,0.05);padding:14px 18px}
+.key-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.key-cell{background:#060e1b;border-radius:8px;padding:9px 10px;border:1px solid rgba(255,255,255,0.04)}
+.kc-label{font-size:0.58rem;color:#334155;font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+.kc-val{font-size:0.86rem;font-weight:700;color:#e2e8f0;margin-top:4px}
+.kc-val.cv-g{color:#10b981}
+.kc-val.cv-a{color:#f59e0b}
+.kc-val.cv-r{color:#ef4444}
+.ab-output{font-size:0.68rem;color:#64748b;line-height:1.65;font-family:'Consolas','Monaco',monospace;background:#060e1b;border-radius:8px;padding:12px;max-height:140px;overflow-y:auto;border:1px solid rgba(255,255,255,0.04);white-space:pre-wrap;word-break:break-word;transition:max-height .3s}
+.ab-toggle{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#475569;padding:3px 9px;border-radius:6px;cursor:pointer;font-size:0.62rem;font-family:'Montserrat',sans-serif;margin-top:8px;transition:.2s}
+.ab-toggle:hover{background:rgba(255,255,255,0.05);color:#94a3b8}
+.ab-pending-txt{font-size:0.7rem;color:#1e3a5f;font-style:italic;padding:4px 0}
 
-        /* Upload boxes */
-        .upload-box {
-            border: 2px dashed rgba(255, 255, 255, 0.25);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 14px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+/* ── RIGHT PANEL ── */
+.rpanel{background:#040c18;border-left:1px solid rgba(255,255,255,0.06);padding:18px;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
 
-        .upload-box:hover {
-            border-color: #00c9a7;
-            background: rgba(0, 201, 167, 0.05);
-        }
+.score-block{text-align:center;padding:20px 0 14px}
+.sb-score{font-size:4.5rem;font-weight:800;line-height:1;transition:.5s}
+.sb-score.sc-low{background:linear-gradient(135deg,#10b981,#00c9a7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-score.sc-med{background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-score.sc-high{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-score.sc-empty{color:#1e3a5f}
+.sb-label{font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1e3a5f;margin-top:6px}
+.sb-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;margin:12px 0 6px}
+.sb-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#10b981 0%,#f59e0b 50%,#ef4444 100%);transition:width .8s ease}
+.sb-range{display:flex;justify-content:space-between;font-size:0.58rem;color:#1e3a5f;font-weight:600}
 
-        .upload-box.has-file {
-            border-color: #00c9a7;
-            background: rgba(0, 201, 167, 0.08);
-        }
+.policy-list{display:flex;flex-direction:column;gap:5px}
+.pl-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05)}
+.pl-label{font-size:0.7rem;color:#64748b}
+.pl-val{font-size:0.7rem;font-weight:700}
+.pv-pass{color:#10b981}
+.pv-fail{color:#ef4444}
+.pv-na{color:#334155}
 
-        .upload-box label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
+.case-rows{display:flex;flex-direction:column;gap:5px}
+.cr-row{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:rgba(255,255,255,0.025);border-radius:7px}
+.cr-lbl{font-size:0.65rem;color:#334155}
+.cr-val{font-size:0.7rem;font-weight:600;color:#94a3b8}
 
-        .upload-box .doc-type { font-weight: 600; font-size: 1rem; }
-        .upload-box .file-name { color: #00c9a7; font-size: 0.85rem; }
-        .upload-box input[type="file"] { display: none; }
+.verdict-box{border-radius:12px;padding:16px;text-align:center}
+.vb-approve{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.28)}
+.vb-decline{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.28)}
+.vb-refer{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.28)}
+.vb-empty{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07)}
+.vb-tag{font-size:0.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.tag-approve{color:#10b981}
+.tag-decline{color:#ef4444}
+.tag-refer{color:#f59e0b}
+.tag-empty{color:#334155}
+.vb-rec{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:14px}
+.vb-empty .vb-rec{color:#334155;font-size:0.85rem;font-weight:500}
+.decision-btns{display:flex;gap:8px}
+.btn-approve{flex:1;padding:11px;background:linear-gradient(90deg,#10b981,#059669);border:none;border-radius:9px;color:#fff;font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:.3s}
+.btn-approve:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(16,185,129,0.3)}
+.btn-approve:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-decline{flex:1;padding:11px;background:transparent;border:1px solid rgba(239,68,68,0.4);border-radius:9px;color:#ef4444;font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;transition:.3s}
+.btn-decline:hover:not(:disabled){background:rgba(239,68,68,0.12)}
+.btn-decline:disabled{opacity:.45;cursor:not-allowed}
 
-        /* Buttons */
-        .btn {
-            width: 100%;
-            padding: 15px 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 16px;
-        }
+.completion-toast{border-radius:12px;padding:14px 16px;animation:fade-in .35s ease;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.ct-approve{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3)}
+.ct-decline{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3)}
+.ct-title{font-size:0.82rem;font-weight:700;margin-bottom:4px}
+.ct-sub{font-size:0.7rem;color:#64748b}
+.ct-close{background:transparent;border:none;color:#334155;font-size:1.1rem;cursor:pointer;flex-shrink:0;line-height:1;padding:0}
+.ct-close:hover{color:#fff}
+@keyframes fade-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
-        .btn-primary {
-            background: linear-gradient(90deg, #00c9a7, #0ea5e9);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 201, 167, 0.3);
-        }
-
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .btn-approve { background: linear-gradient(90deg, #10b981, #059669); color: white; }
-        .btn-decline { background: linear-gradient(90deg, #ef4444, #dc2626); color: white; }
-
-        .btn-approve:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16,185,129,0.3); }
-        .btn-decline:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(239,68,68,0.3); }
-
-        /* Hint box */
-        .hint-box {
-            margin-top: 18px;
-            padding: 14px;
-            background: rgba(14, 165, 233, 0.08);
-            border-radius: 10px;
-            border: 1px solid rgba(14, 165, 233, 0.25);
-        }
-
-        .hint-box h4 { color: #0ea5e9; margin-bottom: 8px; font-size: 0.85rem; }
-        .hint-box a {
-            color: #94a3b8; text-decoration: none;
-            display: block; padding: 3px 0; font-size: 0.85rem;
-        }
-        .hint-box a:hover { color: #0ea5e9; }
-
-        /* Progress list */
-        .progress-list { list-style: none; }
-
-        .progress-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 14px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .progress-item.active {
-            border-left-color: #0ea5e9;
-            background: rgba(14, 165, 233, 0.08);
-        }
-
-        .progress-item.completed { border-left-color: #10b981; }
-
-        .progress-item.error {
-            border-left-color: #ef4444;
-            background: rgba(239, 68, 68, 0.08);
-        }
-
-        .progress-item.waiting {
-            border-left-color: #f59e0b;
-            background: rgba(245, 158, 11, 0.08);
-        }
-
-        .progress-icon {
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.85rem; font-weight: 600;
-            flex-shrink: 0;
-            background: rgba(255,255,255,0.1);
-        }
-
-        .progress-item.active    .progress-icon { background: #0ea5e9; animation: pulse 1.5s infinite; }
-        .progress-item.completed .progress-icon { background: #10b981; }
-        .progress-item.error     .progress-icon { background: #ef4444; }
-        .progress-item.waiting   .progress-icon { background: #f59e0b; }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.5; }
-        }
-
-        .progress-content { flex: 1; }
-        .progress-content h4 { margin-bottom: 4px; font-size: 0.95rem; }
-        .progress-content p  { color: #94a3b8; font-size: 0.85rem; }
-
-        /* Step output box */
-        .step-output {
-            background: #0f1f35;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 8px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.78rem;
-            color: #e2e8f0;
-            white-space: pre-wrap;
-            word-break: break-word;
-            max-height: 180px;
-            overflow-y: auto;
-            border: 1px solid #1e3a5f;
-        }
-
-        /* Approval buttons */
-        .approval-buttons {
-            display: flex; gap: 14px; margin-top: 20px;
-        }
-
-        .approval-buttons .btn { flex: 1; margin-top: 0; }
-
-        .hidden { display: none !important; }
-
-        /* Completion banner */
-        .completion-banner {
-            margin-top: 20px; padding: 20px; border-radius: 12px;
-            position: relative; animation: slideIn 0.3s ease;
-        }
-
-        .completion-banner.approved {
-            background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.15));
-            border: 1px solid #10b981;
-        }
-
-        .completion-banner.declined {
-            background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.15));
-            border: 1px solid #ef4444;
-        }
-
-        .completion-banner h3 { margin-bottom: 8px; font-size: 1.1rem; }
-        .completion-banner p  { color: #94a3b8; font-size: 0.9rem; }
-
-        .btn-close {
-            position: absolute; top: 10px; right: 10px;
-            background: transparent; border: none; color: #fff;
-            font-size: 1.4rem; cursor: pointer; opacity: 0.7;
-        }
-
-        .btn-close:hover { opacity: 1; }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Workflow summary */
-        .workflow-summary {
-            margin-top: 20px;
-            background: rgba(0,0,0,0.25);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            animation: slideIn 0.3s ease;
-        }
-
-        .workflow-summary h3 {
-            margin-bottom: 12px;
-            color: #00c9a7;
-            display: flex; align-items: center; gap: 8px;
-        }
-
-        .summary-step {
-            background: rgba(255,255,255,0.04);
-            border-radius: 8px; padding: 14px;
-            margin-bottom: 8px; border-left: 3px solid #10b981;
-        }
-
-        .summary-step.error { border-left-color: #ef4444; }
-
-        .summary-step h4 {
-            display: flex; align-items: center; gap: 8px;
-            margin-bottom: 6px; font-size: 0.9rem;
-        }
-
-        .summary-step .step-details {
-            color: #94a3b8; font-size: 0.82rem; line-height: 1.5;
-            white-space: pre-wrap; max-height: 150px; overflow-y: auto;
-            font-family: 'Consolas', monospace;
-        }
-
-        .toggle-details {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #94a3b8; padding: 4px 10px; border-radius: 5px;
-            cursor: pointer; font-size: 0.78rem; margin-top: 6px;
-        }
-
-        .toggle-details:hover { background: rgba(255,255,255,0.08); color: #fff; }
-    </style>
+.hidden{display:none!important}
+</style>
 </head>
 <body>
-<div class="container">
 
-    <header>
-        <h1>🏦 Loan Pre-Screening Portal</h1>
-        <p>Upload a Loan Application and Income Verification to start AI-powered pre-screening</p>
-        <span class="badge">⚡ Powered by Microsoft Foundry Multi-Agent Workflow</span>
-    </header>
-
-    <div class="main-content">
-
-        <!-- LEFT: Upload Panel -->
-        <div class="card">
-            <h2 class="section-title"><span>📤</span> Upload Documents</h2>
-
-            <form id="uploadForm">
-                <div class="upload-box" id="appBox">
-                    <label>
-                        <span class="doc-type">📄 Loan Application</span>
-                        <span class="file-name" id="appFileName">Click to select file</span>
-                        <input type="file" name="application" id="appFile"
-                               accept=".txt,.pdf,.doc,.docx" required>
-                    </label>
-                </div>
-
-                <div class="upload-box" id="incomeBox">
-                    <label>
-                        <span class="doc-type">💰 Income Verification</span>
-                        <span class="file-name" id="incomeFileName">Click to select file</span>
-                        <input type="file" name="income" id="incomeFile"
-                               accept=".txt,.pdf,.doc,.docx" required>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    🚀 Start Pre-Screening
-                </button>
-            </form>
-
-            <div class="hint-box">
-                <h4>📁 Sample Test Scenarios</h4>
-                <a href="#">Scenario 1 — Good Application (Low Risk → Approve)</a>
-                <a href="#">Scenario 2 — High DTI (Medium Risk → Refer)</a>
-                <a href="#">Scenario 3 — Low Credit + High DTI (High Risk → Decline)</a>
-            </div>
-        </div>
-
-        <!-- RIGHT: Progress Panel -->
-        <div class="card" id="progressSection">
-            <h2 class="section-title"><span>⚡</span> Workflow Progress</h2>
-
-            <ul class="progress-list" id="progressList">
-                <li class="progress-item" id="step-upload">
-                    <div class="progress-icon">1</div>
-                    <div class="progress-content">
-                        <h4>Upload Documents</h4>
-                        <p>Waiting for documents...</p>
-                    </div>
-                </li>
-                <li class="progress-item" id="step-extract">
-                    <div class="progress-icon">2</div>
-                    <div class="progress-content">
-                        <h4>Application Extraction</h4>
-                        <p>Extract applicant info, loan details, income data</p>
-                    </div>
-                </li>
-                <li class="progress-item" id="step-analyze">
-                    <div class="progress-icon">3</div>
-                    <div class="progress-content">
-                        <h4>Financial Analysis</h4>
-                        <p>Calculate DTI ratio, LTV ratio, affordability</p>
-                    </div>
-                </li>
-                <li class="progress-item" id="step-risk">
-                    <div class="progress-icon">4</div>
-                    <div class="progress-content">
-                        <h4>Risk Assessment &amp; Policy Check</h4>
-                        <p>Score risk 0–100, check lending policy rules</p>
-                    </div>
-                </li>
-                <li class="progress-item" id="step-decision">
-                    <div class="progress-icon">5</div>
-                    <div class="progress-content">
-                        <h4>Underwriter Decision</h4>
-                        <p>Waiting for Approve / Decline</p>
-                    </div>
-                </li>
-                <li class="progress-item" id="step-notify">
-                    <div class="progress-icon">6</div>
-                    <div class="progress-content">
-                        <h4>Notification Email</h4>
-                        <p>Email sent after decision</p>
-                    </div>
-                </li>
-            </ul>
-
-            <!-- Approve / Decline buttons — shown after risk assessment -->
-            <div class="approval-buttons hidden" id="approvalButtons">
-                <button class="btn btn-approve" onclick="submitDecision('APPROVE')">
-                    ✅ Approve to Underwriter
-                </button>
-                <button class="btn btn-decline" onclick="submitDecision('DECLINE')">
-                    ❌ Decline Application
-                </button>
-            </div>
-        </div>
-
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">🏦</div>
+    <div class="tb-title">Loan Pre-Screening Portal</div>
+    <div class="tb-sep"></div>
+    <div class="tb-sub">Microsoft Foundry · Multi-Agent AI</div>
+  </div>
+  <div class="tb-right">
+    <div class="agent-pills">
+      <span class="ap" id="pill-extractor">📄 Extractor</span>
+      <span class="ap" id="pill-analyzer">📊 Analyzer</span>
+      <span class="ap" id="pill-risk">⚖️ Risk Scorer</span>
+      <span class="ap" id="pill-notifier">📧 Notifier</span>
     </div>
+  </div>
+</div>
+
+<div class="workspace">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="sl">Documents</div>
+      <div class="upload-card" id="appBox" style="margin-bottom:10px">
+        <input type="file" id="appFile" accept=".txt,.pdf,.doc,.docx">
+        <div class="uc-icon">📄</div>
+        <div class="uc-label">Loan Application</div>
+        <div class="uc-hint" id="appHint">Click to upload</div>
+        <div class="uc-file hidden" id="appName"></div>
+      </div>
+      <div class="upload-card" id="incomeBox">
+        <input type="file" id="incomeFile" accept=".txt,.pdf,.doc,.docx">
+        <div class="uc-icon">💰</div>
+        <div class="uc-label">Income Verification</div>
+        <div class="uc-hint" id="incomeHint">Click to upload</div>
+        <div class="uc-file hidden" id="incomeName"></div>
+      </div>
+    </div>
+
+    <button class="btn-run" id="runBtn" disabled>▶ Start Pre-Screening</button>
+
+    <div>
+      <div class="sl">Test Scenarios</div>
+      <button class="scn-btn" onclick="hint(1)">
+        <span class="scn-name">Michael Johnson</span>
+        <span class="scn-sub">Credit 740 · DTI 9.9% · LTV 80%</span>
+        <span class="scn-tag tg">LOW → Approve</span>
+      </button>
+      <button class="scn-btn" onclick="hint(2)">
+        <span class="scn-name">Sarah Chen</span>
+        <span class="scn-sub">Self-employed · Income mismatch · DTI 39.7%</span>
+        <span class="scn-tag ta">MEDIUM → Refer</span>
+      </button>
+      <button class="scn-btn" onclick="hint(3)">
+        <span class="scn-name">Robert Williams</span>
+        <span class="scn-sub">Credit 595 · DTI 44% · LTV 97.5%</span>
+        <span class="scn-tag tr">HIGH → Decline</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FEED -->
+  <div class="feed">
+    <div class="feed-hdr">Agent Execution Log</div>
+
+    <!-- Agent 1 -->
+    <div class="agent-block" id="block-extractor">
+      <div class="ab-hdr" onclick="toggleBlock('extractor')">
+        <div class="ab-left">
+          <div class="ab-num" id="num-extractor">01</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-doc-extractor</div>
+            <div class="ab-role">Document Extraction Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-time hidden" id="time-extractor"></span>
+          <span class="ab-badge bd-pending" id="badge-extractor">Pending</span>
+          <span class="ab-chevron" id="chev-extractor">▼</span>
+        </div>
+      </div>
+      <div class="ab-body hidden" id="body-extractor">
+        <div class="ab-pending-txt" id="pend-extractor">Waiting for documents...</div>
+      </div>
+    </div>
+
+    <!-- Agent 2 -->
+    <div class="agent-block" id="block-analyzer">
+      <div class="ab-hdr" onclick="toggleBlock('analyzer')">
+        <div class="ab-left">
+          <div class="ab-num" id="num-analyzer">02</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-financial-analyzer</div>
+            <div class="ab-role">Financial Analysis Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-time hidden" id="time-analyzer"></span>
+          <span class="ab-badge bd-pending" id="badge-analyzer">Pending</span>
+          <span class="ab-chevron" id="chev-analyzer">▼</span>
+        </div>
+      </div>
+      <div class="ab-body hidden" id="body-analyzer">
+        <div class="ab-pending-txt" id="pend-analyzer">Waiting for extraction...</div>
+      </div>
+    </div>
+
+    <!-- Agent 3 -->
+    <div class="agent-block" id="block-risk">
+      <div class="ab-hdr" onclick="toggleBlock('risk')">
+        <div class="ab-left">
+          <div class="ab-num" id="num-risk">03</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-risk-scorer</div>
+            <div class="ab-role">Risk Assessment Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-time hidden" id="time-risk"></span>
+          <span class="ab-badge bd-pending" id="badge-risk">Pending</span>
+          <span class="ab-chevron" id="chev-risk">▼</span>
+        </div>
+      </div>
+      <div class="ab-body hidden" id="body-risk">
+        <div class="ab-pending-txt" id="pend-risk">Waiting for analysis...</div>
+      </div>
+    </div>
+
+    <!-- Agent 4 -->
+    <div class="agent-block" id="block-notifier">
+      <div class="ab-hdr" onclick="toggleBlock('notifier')">
+        <div class="ab-left">
+          <div class="ab-num" id="num-notifier">04</div>
+          <div class="ab-info">
+            <div class="ab-name">loan-notifier</div>
+            <div class="ab-role">Email Notification Agent</div>
+          </div>
+        </div>
+        <div class="ab-right">
+          <span class="ab-time hidden" id="time-notifier"></span>
+          <span class="ab-badge bd-pending" id="badge-notifier">Pending</span>
+          <span class="ab-chevron" id="chev-notifier">▼</span>
+        </div>
+      </div>
+      <div class="ab-body hidden" id="body-notifier">
+        <div class="ab-pending-txt" id="pend-notifier">Waiting for decision...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="rpanel" id="rpanel">
+
+    <div>
+      <div class="sl">Risk Score</div>
+      <div class="score-block">
+        <div class="sb-score sc-empty" id="sbScore">—</div>
+        <div class="sb-label" id="sbLabel">Awaiting assessment</div>
+        <div class="sb-bar"><div class="sb-fill" id="sbFill" style="width:0%"></div></div>
+        <div class="sb-range"><span>Low</span><span>Medium</span><span>High</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sl">Policy Checks</div>
+      <div class="policy-list">
+        <div class="pl-item"><span class="pl-label">Credit Score (≥620)</span><span class="pl-val pv-na" id="pc-credit">—</span></div>
+        <div class="pl-item"><span class="pl-label">DTI Ratio (≤43%)</span><span class="pl-val pv-na" id="pc-dti">—</span></div>
+        <div class="pl-item"><span class="pl-label">LTV Ratio (≤97%)</span><span class="pl-val pv-na" id="pc-ltv">—</span></div>
+        <div class="pl-item"><span class="pl-label">Employment (≥2yr)</span><span class="pl-val pv-na" id="pc-emp">—</span></div>
+        <div class="pl-item"><span class="pl-label">Loan Amount</span><span class="pl-val pv-na" id="pc-amt">—</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sl">Case Info</div>
+      <div class="case-rows">
+        <div class="cr-row"><span class="cr-lbl">Applicant</span><span class="cr-val" id="ci-name">—</span></div>
+        <div class="cr-row"><span class="cr-lbl">Loan Amount</span><span class="cr-val" id="ci-amt">—</span></div>
+        <div class="cr-row"><span class="cr-lbl">Loan Type</span><span class="cr-val" id="ci-type">—</span></div>
+        <div class="cr-row"><span class="cr-lbl">Case ID</span><span class="cr-val" id="ci-id">—</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sl">Decision</div>
+      <div class="verdict-box vb-empty" id="verdictBox">
+        <div class="vb-tag tag-empty" id="verdictTag">AI RECOMMENDATION</div>
+        <div class="vb-rec" id="verdictRec">Awaiting risk assessment</div>
+        <div class="decision-btns hidden" id="decisionBtns">
+          <button class="btn-approve" id="btnApprove" onclick="submitDecision('APPROVE')">✅ Approve</button>
+          <button class="btn-decline" id="btnDecline" onclick="submitDecision('DECLINE')">❌ Decline</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-    let currentSessionId = null;
-    let eventSource = null;
-    let workflowSteps = {};
-    let fullStepMessages = {};
+// ── State ─────────────────────────────────────────────────────────────────────
+let sessionId = null, evtSrc = null;
+let agentRaw  = {};
+let startTimes = {};
 
-    // Maps Foundry workflow action IDs → UI step IDs
-    const stepMap = {
-        'upload':                 'step-upload',
-        'foundry_upload':         'step-upload',
-        'invoke-extractor':       'step-extract',
-        'invoke-analyzer':        'step-analyze',
-        'invoke-risk-scorer':     'step-risk',
-        'approval':               'step-decision',
-        'approval-question':      'step-decision',
-        'approval_submit':        'step-decision',
-        'invoke-approval-email':  'step-notify',
-        'invoke-rejection-email': 'step-notify',
-    };
+// ── File Inputs ───────────────────────────────────────────────────────────────
+['app','income'].forEach(t => {
+  document.getElementById(t+'File').addEventListener('change', function(){
+    const box  = document.getElementById(t === 'app' ? 'appBox' : 'incomeBox');
+    const hint = document.getElementById(t+'Hint');
+    const name = document.getElementById(t+'Name');
+    if(this.files.length){
+      box.classList.add('filled');
+      hint.classList.add('hidden');
+      name.textContent = this.files[0].name;
+      name.classList.remove('hidden');
+    }
+    checkReady();
+  });
+});
 
-    const STEP_IDS = ['step-upload','step-extract','step-analyze','step-risk','step-decision','step-notify'];
+function checkReady(){
+  const ok = document.getElementById('appFile').files.length > 0 &&
+             document.getElementById('incomeFile').files.length > 0;
+  document.getElementById('runBtn').disabled = !ok;
+}
 
-    const STEP_DEFAULTS = {
-        'step-upload':   'Waiting for documents...',
-        'step-extract':  'Extract applicant info, loan details, income data',
-        'step-analyze':  'Calculate DTI ratio, LTV ratio, affordability',
-        'step-risk':     'Score risk 0–100, check lending policy rules',
-        'step-decision': 'Waiting for Approve / Decline',
-        'step-notify':   'Email sent after decision',
-    };
+// ── Scenarios ─────────────────────────────────────────────────────────────────
+function hint(n){
+  const names = ['','LOAN_APP_001_GOOD','LOAN_APP_002_HIGH_DTI','LOAN_APP_003_DECLINE'];
+  const inc   = ['','INCOME_001_GOOD','INCOME_002_HIGH_DTI','INCOME_003_DECLINE'];
+  alert(`Upload these from sample_docs/:\n• ${names[n]}.txt\n• ${inc[n]}.txt`);
+}
 
-    // File input listeners
-    document.getElementById('appFile').addEventListener('change', function() {
-        updateFileName('app', this);
+// ── Toggle Agent Block ────────────────────────────────────────────────────────
+function toggleBlock(key){
+  const body = document.getElementById('body-' + key);
+  const chev = document.getElementById('chev-' + key);
+  const open = !body.classList.contains('hidden');
+  body.classList.toggle('hidden', open);
+  chev.classList.toggle('open', !open);
+}
+
+// ── Run ───────────────────────────────────────────────────────────────────────
+document.getElementById('runBtn').addEventListener('click', async function(){
+  resetUI();
+  this.disabled = true;
+  this.textContent = '⏳ Processing...';
+
+  const fd = new FormData();
+  fd.append('application', document.getElementById('appFile').files[0]);
+  fd.append('income',      document.getElementById('incomeFile').files[0]);
+
+  try{
+    const res  = await fetch('/api/upload', {method:'POST', body:fd});
+    if(!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    sessionId  = data.session_id;
+    document.getElementById('ci-id').textContent = sessionId.substring(0,16) + '...';
+    startStream(sessionId);
+  }catch(err){
+    showToast('error', '⚠️ Upload failed', err.message);
+    this.disabled = false;
+    this.textContent = '▶ Start Pre-Screening';
+  }
+});
+
+// ── SSE ───────────────────────────────────────────────────────────────────────
+function startStream(sid){
+  if(evtSrc) evtSrc.close();
+  evtSrc = new EventSource('/api/progress/' + sid);
+  evtSrc.onmessage = e => {
+    const d = JSON.parse(e.data);
+    if(d.type === 'keepalive') return;
+    handleEvt(d);
+    if(d.status === 'complete' || d.status === 'error') evtSrc.close();
+  };
+  evtSrc.onerror = () => { if(evtSrc){ evtSrc.close(); evtSrc = null; }};
+}
+
+// ── Event Handler ─────────────────────────────────────────────────────────────
+const STEP_KEY = {
+  'invoke-extractor':      'extractor',
+  'invoke-analyzer':       'analyzer',
+  'invoke-risk-scorer':    'risk',
+  'invoke-approval-email': 'notifier',
+  'invoke-rejection-email':'notifier',
+};
+
+function handleEvt(d){
+  const step   = d.step   || '';
+  const status = d.status || '';
+  const msg    = d.message || '';
+  const data   = d.data   || {};
+
+  if(step === 'error'){ showToast('error','⚠️ Error', msg); resetRunBtn(); return; }
+
+  const key = STEP_KEY[step];
+  if(key){
+    if(status === 'active')    setActive(key);
+    if(status === 'completed') setDone(key, msg, data);
+    if(status === 'error')     setError(key, msg);
+  }
+
+  if(d.show_approval_buttons || step === 'approval-question' || status === 'waiting'){
+    showDecision();
+  }
+  if(status === 'complete') resetRunBtn();
+}
+
+// ── Agent State ───────────────────────────────────────────────────────────────
+function setActive(key){
+  startTimes[key] = Date.now();
+  document.getElementById('block-'+key).classList.add('ab-active');
+  document.getElementById('num-'+key).className   = 'ab-num n-active';
+  document.getElementById('badge-'+key).textContent = 'Running';
+  document.getElementById('badge-'+key).className   = 'ab-badge bd-active';
+  setPill(key, 'active');
+  // open body
+  const body = document.getElementById('body-'+key);
+  body.classList.remove('hidden');
+  document.getElementById('chev-'+key).classList.add('open');
+  const pend = document.getElementById('pend-'+key);
+  if(pend) pend.textContent = 'Running...';
+}
+
+function setDone(key, summary, data){
+  const elapsed = startTimes[key] ? ((Date.now() - startTimes[key]) / 1000).toFixed(1) + 's' : '';
+  document.getElementById('block-'+key).classList.remove('ab-active');
+  document.getElementById('block-'+key).classList.add('ab-done');
+  document.getElementById('num-'+key).className   = 'ab-num n-done';
+  document.getElementById('badge-'+key).textContent = 'Done';
+  document.getElementById('badge-'+key).className   = 'ab-badge bd-done';
+  const timeEl = document.getElementById('time-'+key);
+  if(elapsed){ timeEl.textContent = elapsed; timeEl.classList.remove('hidden'); }
+  setPill(key, 'done');
+
+  const raw = (data && data.raw_output) || summary || '';
+  agentRaw[key] = raw;
+
+  // Populate body
+  const body = document.getElementById('body-'+key);
+  body.classList.remove('hidden');
+  document.getElementById('chev-'+key).classList.add('open');
+  document.getElementById('pend-'+key)?.remove();
+
+  // Key metrics row
+  const metrics = extractMetrics(key, raw);
+  if(metrics.length){
+    const row = document.createElement('div');
+    row.className = 'key-row';
+    metrics.forEach(m => {
+      const cell = document.createElement('div');
+      cell.className = 'key-cell';
+      cell.innerHTML = `<div class="kc-label">${m.label}</div><div class="kc-val ${m.cls}">${m.value}</div>`;
+      row.appendChild(cell);
     });
-    document.getElementById('incomeFile').addEventListener('change', function() {
-        updateFileName('income', this);
-    });
+    body.appendChild(row);
+  }
 
-    function updateFileName(type, input) {
-        const name = input.files[0]?.name || 'Click to select file';
-        document.getElementById(type + 'FileName').textContent = name;
-        document.getElementById(type + 'Box').classList.toggle('has-file', input.files.length > 0);
+  // Raw output
+  if(raw){
+    const SHORT = 400;
+    const short = raw.length > SHORT ? raw.substring(0, SHORT) + '...' : raw;
+    const out   = document.createElement('div');
+    out.className = 'ab-output';
+    out.textContent = short;
+    body.appendChild(out);
+    if(raw.length > SHORT){
+      const btn = document.createElement('button');
+      btn.className = 'ab-toggle';
+      btn.textContent = 'Show More';
+      btn.onclick = () => {
+        if(btn.textContent === 'Show More'){ out.textContent = raw; out.style.maxHeight = '400px'; btn.textContent = 'Show Less'; }
+        else { out.textContent = short; out.style.maxHeight = '140px'; btn.textContent = 'Show More'; }
+      };
+      body.appendChild(btn);
     }
+  }
 
-    // Form submit
-    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+  // Update right panel
+  if(key === 'extractor') updateCaseInfo(raw);
+  if(key === 'risk')      updateRiskPanel(raw);
+}
 
-        const formData = new FormData(this);
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = '⏳ Uploading...';
+function setError(key, msg){
+  document.getElementById('block-'+key).classList.add('ab-error');
+  document.getElementById('num-'+key).className = 'ab-num n-error';
+  document.getElementById('badge-'+key).textContent = 'Error';
+  document.getElementById('badge-'+key).className = 'ab-badge bd-error';
+  const pend = document.getElementById('pend-'+key);
+  if(pend) pend.textContent = msg || 'Error occurred';
+  setPill(key, 'error');
+}
 
-        workflowSteps = {};
-        fullStepMessages = {};
+// ── Key Metrics Extraction ────────────────────────────────────────────────────
+function extractMetrics(key, raw){
+  const t = raw.toUpperCase();
+  if(key === 'extractor'){
+    const name  = raw.match(/Applicant Name[:\s]+([A-Za-z ]+)/i);
+    const score = raw.match(/Credit Score[^:]*:\s*(\d+)/i);
+    const amt   = raw.match(/Loan Amount[^:]*:\s*\$?([\d,]+)/i);
+    const res = [];
+    if(name)  res.push({label:'Applicant', value: name[1].trim().split(' ').slice(0,2).join(' '), cls:''});
+    if(score) res.push({label:'Credit Score', value: score[1], cls: parseInt(score[1]) >= 620 ? 'cv-g' : 'cv-r'});
+    if(amt)   res.push({label:'Loan Amount', value: '$' + amt[1], cls:''});
+    return res;
+  }
+  if(key === 'analyzer'){
+    const dti = raw.match(/DTI[^:]*:\s*([\d.]+)%/i);
+    const ltv = raw.match(/LTV[^:]*:\s*([\d.]+)%/i);
+    const inc = raw.match(/Income Consistency[:\s]*(CONSISTENT|INCONSISTENT)/i);
+    const res = [];
+    if(dti) res.push({label:'DTI', value: dti[1]+'%', cls: parseFloat(dti[1]) <= 43 ? 'cv-g' : 'cv-r'});
+    if(ltv) res.push({label:'LTV', value: ltv[1]+'%', cls: parseFloat(ltv[1]) <= 97 ? 'cv-g' : 'cv-r'});
+    if(inc) res.push({label:'Income', value: inc[1], cls: inc[1].toUpperCase() === 'CONSISTENT' ? 'cv-g' : 'cv-r'});
+    return res;
+  }
+  if(key === 'risk'){
+    const score = raw.match(/TOTAL RISK SCORE[:\s]*([\d]+)/i);
+    const level = raw.match(/Risk Level[:\s]*(LOW|MEDIUM|HIGH)/i);
+    const rec   = raw.match(/Recommendation[:\s]*(APPROVE|REFER|DECLINE)/i);
+    const res   = [];
+    if(score) res.push({label:'Risk Score', value: score[1]+'/100', cls: parseInt(score[1]) < 31 ? 'cv-g' : parseInt(score[1]) < 61 ? 'cv-a' : 'cv-r'});
+    if(level) res.push({label:'Risk Level', value: level[1], cls: level[1]==='LOW'?'cv-g':level[1]==='MEDIUM'?'cv-a':'cv-r'});
+    if(rec)   res.push({label:'Decision', value: rec[1], cls: rec[1]==='APPROVE'?'cv-g':rec[1]==='REFER'?'cv-a':'cv-r'});
+    return res;
+  }
+  return [];
+}
 
-        // Clear previous run
-        document.querySelector('.workflow-summary')?.remove();
-        document.querySelector('.completion-banner')?.remove();
+// ── Right Panel Updates ───────────────────────────────────────────────────────
+function updateCaseInfo(raw){
+  const name = raw.match(/(?:Applicant(?:\s+Full)?\s+Name)[:\s]+([A-Za-z][A-Za-z]+(?: [A-Za-z]+){0,3})/i);
+  const amt  = raw.match(/(?:Loan Amount|Amount Requested)[^:]*:\s*\$?([\d,]+)/i);
+  const type = raw.match(/Loan Type[:\s]+([^\n\r]+)/i);
+  if(name){ const n = name[1].trim().split(/\s+/).slice(0,3).join(' '); if(n.length > 1) document.getElementById('ci-name').textContent = n; }
+  if(amt)  document.getElementById('ci-amt').textContent  = '$' + amt[1];
+  if(type) document.getElementById('ci-type').textContent = type[1].trim().substring(0,20);
+}
 
-        document.querySelectorAll('.progress-item').forEach(item => {
-            item.classList.remove('active','completed','error','waiting');
-            item.querySelector('.step-output')?.remove();
-            const p = item.querySelector('p');
-            if (p) p.textContent = STEP_DEFAULTS[item.id] || '';
-        });
+function updateRiskPanel(raw){
+  const score = raw.match(/TOTAL RISK SCORE[:\s]*([\d]+)/i);
+  const level = raw.match(/Risk Level[:\s]*(LOW|MEDIUM|HIGH)/i);
+  const rec   = raw.match(/Recommendation[:\s]*(APPROVE|REFER|DECLINE)/i);
 
-        try {
-            const res = await fetch('/api/upload', { method: 'POST', body: formData });
-            if (!res.ok) throw new Error(await res.text());
+  // Score number + bar
+  if(score){
+    const n = parseInt(score[1]);
+    const el = document.getElementById('sbScore');
+    el.textContent = n;
+    el.className = 'sb-score ' + (n < 31 ? 'sc-low' : n < 61 ? 'sc-med' : 'sc-high');
+    document.getElementById('sbFill').style.width = n + '%';
+  }
+  if(level) document.getElementById('sbLabel').textContent = level[1] + ' RISK';
 
-            const data = await res.json();
-            currentSessionId = data.session_id;
+  // Policy checks — parse from raw text
+  function setPC(id, val, isPass){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = val;
+    el.className = 'pl-val ' + (isPass === true ? 'pv-pass' : isPass === false ? 'pv-fail' : 'pv-na');
+  }
+  const creditLine = raw.match(/Credit Score Check[:\s]+([^\n]+)/i) || raw.match(/Credit Score[:\s]*([\d]+)[^\n]*(?:PASS|FAIL)/i);
+  const dtiLine    = raw.match(/DTI Check[:\s]+([^\n]+)/i);
+  const ltvLine    = raw.match(/LTV Check[:\s]+([^\n]+)/i);
+  const empLine    = raw.match(/Employment Check[:\s]+([^\n]+)/i);
+  const amtLine    = raw.match(/Loan Amount Check[:\s]+([^\n]+)/i);
 
-            startProgressStream(currentSessionId);
-            submitBtn.textContent = '⏳ Processing...';
-        } catch (err) {
-            alert('Error: ' + err.message);
-            submitBtn.disabled = false;
-            submitBtn.textContent = '🚀 Start Pre-Screening';
-        }
-    });
+  if(creditLine){ const pass = creditLine[0].toUpperCase().includes('PASS'); const m = raw.match(/Credit Score[^:]*:\s*([\d]+)/i); setPC('pc-credit', m ? m[1] + (pass?' ✓':' ✗') : pass?'PASS':'FAIL', pass); }
+  if(dtiLine)   { const pass = dtiLine[0].toUpperCase().includes('PASS'); const m = raw.match(/DTI[^:]*:\s*([\d.]+)%/i); setPC('pc-dti', m ? m[1]+'%'+(pass?' ✓':' ✗') : pass?'PASS':'FAIL', pass); }
+  if(ltvLine)   { const pass = ltvLine[0].toUpperCase().includes('PASS'); const m = raw.match(/LTV[^:]*:\s*([\d.]+)%/i); setPC('pc-ltv', m ? m[1]+'%'+(pass?' ✓':' ✗') : pass?'PASS':'FAIL', pass); }
+  if(empLine)   { const pass = empLine[0].toUpperCase().includes('PASS'); const m = raw.match(/(\d+\.?\d*)\s*(?:year|yr)/i); setPC('pc-emp', m ? m[1]+'yr'+(pass?' ✓':' ✗') : pass?'PASS':'FAIL', pass); }
+  if(amtLine)   { const pass = amtLine[0].toUpperCase().includes('PASS'); setPC('pc-amt', pass ? '✓ Pass' : '✗ Fail', pass); }
 
-    // SSE stream
-    function startProgressStream(sessionId) {
-        if (eventSource) eventSource.close();
-        eventSource = new EventSource('/api/progress/' + sessionId);
+  // Verdict box
+  if(rec){
+    const r = rec[1].toUpperCase();
+    const vb  = document.getElementById('verdictBox');
+    const tag = document.getElementById('verdictTag');
+    const rEl = document.getElementById('verdictRec');
+    vb.className  = 'verdict-box ' + (r==='APPROVE'?'vb-approve':r==='DECLINE'?'vb-decline':'vb-refer');
+    tag.className = 'vb-tag ' + (r==='APPROVE'?'tag-approve':r==='DECLINE'?'tag-decline':'tag-refer');
+    tag.textContent = 'AI RECOMMENDATION';
+    rEl.textContent = r==='APPROVE'?'✅ APPROVE':r==='DECLINE'?'❌ DECLINE':'⚠️ REFER TO SENIOR UNDERWRITER';
+  }
+}
 
-        eventSource.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            if (data.type === 'keepalive') return;
-            updateProgress(data);
-            if (data.status === 'complete' || data.status === 'error') {
-                eventSource.close();
-            }
-        };
+// ── Decision ──────────────────────────────────────────────────────────────────
+function showDecision(){
+  document.getElementById('decisionBtns').classList.remove('hidden');
+}
 
-        eventSource.onerror = function() {
-            if (eventSource) { eventSource.close(); eventSource = null; }
-        };
-    }
+async function submitDecision(decision){
+  if(!sessionId) return;
+  if(evtSrc){ evtSrc.close(); evtSrc = null; }
+  document.getElementById('btnApprove').disabled = true;
+  document.getElementById('btnDecline').disabled = true;
+  document.getElementById('verdictRec').textContent = `Submitting ${decision}...`;
+  setActive('notifier');
+  try{
+    const res  = await fetch('/api/approve/' + sessionId + '?decision=' + decision, {method:'POST'});
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Failed');
+    if(res.status === 202) pollStatus(decision);
+    else finishUI(decision, data.response || '');
+  }catch(err){
+    setError('notifier', err.message);
+    document.getElementById('btnApprove').disabled = false;
+    document.getElementById('btnDecline').disabled = false;
+  }
+}
 
-    // Progress helpers
-    function clearActive() {
-        STEP_IDS.forEach(id => document.getElementById(id)?.classList.remove('active'));
-    }
+async function pollStatus(decision){
+  for(let i=0; i<120; i++){
+    if(i>0) await new Promise(r=>setTimeout(r,1500));
+    try{
+      const r = await fetch('/api/status/'+sessionId);
+      const s = await r.json();
+      if(s.status==='complete'||s.status==='error'||s.status==='not_found'){
+        finishUI(decision, s.response||s.error||'');
+        return;
+      }
+    }catch(e){}
+  }
+  finishUI(decision,'');
+}
 
-    function markCompletedUpTo(stepId) {
-        const idx = STEP_IDS.indexOf(stepId);
-        for (let i = 0; i < idx; i++) {
-            const el = document.getElementById(STEP_IDS[i]);
-            if (el && !el.classList.contains('completed') && !el.classList.contains('error')) {
-                el.classList.remove('active','waiting');
-                el.classList.add('completed');
-            }
-        }
-    }
+function finishUI(decision, responseText){
+  document.getElementById('decisionBtns').classList.add('hidden');
+  setDone('notifier', 'Notification prepared', {raw_output: responseText});
+  showToast(decision === 'APPROVE' ? 'approve' : 'decline',
+    decision === 'APPROVE' ? '✅ Application Approved' : '❌ Application Declined',
+    decision === 'APPROVE' ? 'Passed pre-screening. Underwriting team notified.' : 'Did not meet criteria. Decline notification prepared.');
+  resetRunBtn();
+}
 
-    function escapeHtml(t) {
-        const d = document.createElement('div');
-        d.textContent = t;
-        return d.innerHTML;
-    }
+// ── Pills ─────────────────────────────────────────────────────────────────────
+function setPill(key, state){
+  const el = document.getElementById('pill-'+key);
+  if(!el) return;
+  el.classList.remove('ap-active','ap-done');
+  if(state === 'active') el.classList.add('ap-active');
+  if(state === 'done')   el.classList.add('ap-done');
+}
 
-    function updateProgress(data) {
-        const stepKey = data.step || 'unknown';
-        if (data.status === 'completed' || data.status === 'error') {
-            workflowSteps[stepKey]    = { message: data.message, status: data.status, data: data.data };
-            fullStepMessages[stepKey] = data.message;
-        }
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(type, title, sub){
+  document.querySelectorAll('.completion-toast').forEach(t=>t.remove());
+  const t = document.createElement('div');
+  t.className = 'completion-toast ' + (type==='approve'?'ct-approve':'ct-decline');
+  t.innerHTML = `<div><div class="ct-title">${title}</div><div class="ct-sub">${sub}</div></div>
+    <button class="ct-close" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('rpanel').appendChild(t);
+}
 
-        let stepId = stepMap[data.step];
-        if (!stepId) {
-            for (const [k, v] of Object.entries(stepMap)) {
-                if (data.step && data.step.includes(k)) { stepId = v; break; }
-            }
-        }
+// ── Reset ─────────────────────────────────────────────────────────────────────
+function resetUI(){
+  agentRaw = {}; startTimes = {};
+  ['extractor','analyzer','risk','notifier'].forEach(key => {
+    document.getElementById('block-'+key).className = 'agent-block';
+    document.getElementById('num-'+key).className = 'ab-num';
+    document.getElementById('badge-'+key).className = 'ab-badge bd-pending';
+    document.getElementById('badge-'+key).textContent = 'Pending';
+    document.getElementById('time-'+key).classList.add('hidden');
+    const body = document.getElementById('body-'+key);
+    body.classList.add('hidden');
+    body.innerHTML = `<div class="ab-pending-txt" id="pend-${key}">${
+      key==='extractor'?'Waiting for documents...':key==='analyzer'?'Waiting for extraction...':key==='risk'?'Waiting for analysis...':'Waiting for decision...'
+    }</div>`;
+    document.getElementById('chev-'+key).classList.remove('open');
+    setPill(key, '');
+  });
+  // Reset right panel
+  const sc = document.getElementById('sbScore');
+  sc.textContent='—'; sc.className='sb-score sc-empty';
+  document.getElementById('sbLabel').textContent='Awaiting assessment';
+  document.getElementById('sbFill').style.width='0%';
+  ['pc-credit','pc-dti','pc-ltv','pc-emp','pc-amt'].forEach(id=>{
+    const el=document.getElementById(id); el.textContent='—'; el.className='pl-val pv-na';
+  });
+  ['ci-name','ci-amt','ci-type'].forEach(id=>{ document.getElementById(id).textContent='—'; });
+  const vb=document.getElementById('verdictBox');
+  vb.className='verdict-box vb-empty';
+  document.getElementById('verdictTag').className='vb-tag tag-empty';
+  document.getElementById('verdictTag').textContent='AI RECOMMENDATION';
+  document.getElementById('verdictRec').textContent='Awaiting risk assessment';
+  document.getElementById('decisionBtns').classList.add('hidden');
+  document.getElementById('btnApprove').disabled=false;
+  document.getElementById('btnDecline').disabled=false;
+  document.querySelectorAll('.completion-toast').forEach(t=>t.remove());
+}
 
-        if (stepId) {
-            const el = document.getElementById(stepId);
-            if (el) {
-                clearActive();
-                el.classList.remove('active','completed','error','waiting');
-
-                const isApproval = (data.step === 'approval' || data.step === 'approval-question');
-                if (data.status === 'waiting' || (isApproval && data.status === 'active')) {
-                    el.classList.add('waiting');
-                    markCompletedUpTo(stepId);
-                    document.getElementById('approvalButtons').classList.remove('hidden');
-                } else {
-                    el.classList.add(data.status || 'active');
-                    if (data.status === 'active') markCompletedUpTo(stepId);
-                }
-
-                const msgEl = el.querySelector('p');
-                if (msgEl && data.message) {
-                    msgEl.textContent = data.message.length > 100
-                        ? data.message.substring(0,97) + '...'
-                        : data.message;
-                }
-
-                // Show agent output inline when step completes
-                if (data.status === 'completed') {
-                    const rawOutput = (data.data && data.data.raw_output) || data.message || '';
-                    if (rawOutput) {
-                        const contentDiv = el.querySelector('.progress-content');
-                        if (contentDiv) {
-                            el.querySelector('.step-output')?.remove();
-                            const out = document.createElement('div');
-                            out.className = 'step-output';
-                            const short = rawOutput.length > 400
-                                ? rawOutput.substring(0,400) + '...'
-                                : rawOutput;
-                            out.textContent = short;
-                            out.setAttribute('data-full', rawOutput);
-                            if (rawOutput.length > 400) {
-                                const btn = document.createElement('button');
-                                btn.className = 'toggle-details';
-                                btn.textContent = 'Show More';
-                                btn.onclick = function() {
-                                    if (btn.textContent === 'Show More') {
-                                        out.textContent = rawOutput;
-                                        out.style.maxHeight = '400px';
-                                        btn.textContent = 'Show Less';
-                                    } else {
-                                        out.textContent = short;
-                                        out.style.maxHeight = '180px';
-                                        btn.textContent = 'Show More';
-                                    }
-                                    out.appendChild(btn);
-                                };
-                                out.appendChild(btn);
-                            }
-                            contentDiv.appendChild(out);
-                        }
-                    }
-                }
-
-                // Fallback: show approval buttons after risk scorer
-                if ((stepId === 'step-risk') && data.status === 'completed') {
-                    setTimeout(function() {
-                        const btns = document.getElementById('approvalButtons');
-                        if (btns && btns.classList.contains('hidden')) {
-                            btns.classList.remove('hidden');
-                            const dec = document.getElementById('step-decision');
-                            if (dec) {
-                                clearActive();
-                                dec.classList.add('waiting');
-                                dec.querySelector('p').textContent = 'Waiting for underwriter decision';
-                            }
-                        }
-                    }, 800);
-                }
-            }
-        }
-
-        if (data.show_approval_buttons === true ||
-            (data.step === 'approval' && data.status === 'waiting') ||
-            (data.step === 'approval-question')) {
-            document.getElementById('approvalButtons').classList.remove('hidden');
-            markCompletedUpTo('step-decision');
-        }
-
-        if (data.status === 'complete') {
-            document.getElementById('approvalButtons').classList.add('hidden');
-            document.getElementById('submitBtn').disabled = false;
-            document.getElementById('submitBtn').textContent = '🚀 Start New Pre-Screening';
-        }
-    }
-
-    // Underwriter decision
-    async function submitDecision(decision) {
-        if (!currentSessionId) return;
-        if (eventSource) { eventSource.close(); eventSource = null; }
-
-        const decisionStep = document.getElementById('step-decision');
-        const buttons      = document.querySelectorAll('.approval-buttons .btn');
-        buttons.forEach(b => b.disabled = true);
-
-        clearActive();
-        markCompletedUpTo('step-decision');
-        decisionStep.classList.remove('waiting','completed','error');
-        decisionStep.classList.add('active');
-        decisionStep.querySelector('p').textContent = `Processing ${decision}...`;
-
-        try {
-            const res  = await fetch('/api/approve/' + currentSessionId + '?decision=' + decision, { method: 'POST' });
-            const data = await res.json();
-
-            if (res.status === 404) throw new Error('Session not found — please upload documents again.');
-            if (!res.ok && data.error) throw new Error(data.error);
-
-            if (res.status === 202 && data.status === 'processing') {
-                decisionStep.classList.remove('active');
-                decisionStep.classList.add('completed');
-                decisionStep.querySelector('p').textContent = decision === 'APPROVE' ? '✅ Approved' : '❌ Declined';
-
-                const notifyStep = document.getElementById('step-notify');
-                if (notifyStep) {
-                    notifyStep.classList.add('active');
-                    notifyStep.querySelector('p').textContent = decision === 'APPROVE'
-                        ? 'Sending approval notification...'
-                        : 'Sending decline notification...';
-                }
-                pollStatus(decision, decisionStep, buttons);
-                return;
-            }
-            finishUI(decision, data.response || '', decisionStep, buttons);
-        } catch (err) {
-            alert('Error: ' + err.message);
-            buttons.forEach(b => b.disabled = false);
-            decisionStep.classList.remove('active');
-            decisionStep.classList.add('error');
-            decisionStep.querySelector('p').textContent = 'Error — please restart workflow';
-            document.getElementById('submitBtn').disabled = false;
-            document.getElementById('submitBtn').textContent = '🚀 Start Pre-Screening';
-        }
-    }
-
-    async function pollStatus(decision, decisionStep, buttons) {
-        const maxAttempts = 120;
-        const interval    = 1500;
-        const notifyStep  = document.getElementById('step-notify');
-        let dots = 0;
-
-        for (let i = 0; i < maxAttempts; i++) {
-            if (i > 0) await new Promise(r => setTimeout(r, interval));
-            try {
-                const r = await fetch('/api/status/' + currentSessionId);
-                const s = await r.json();
-                if (s.status === 'complete' || s.status === 'error' || s.status === 'not_found') {
-                    finishUI(decision, s.response || s.error || '', decisionStep, buttons);
-                    return;
-                }
-                if (s.status === 'approving' && notifyStep) {
-                    dots = (dots + 1) % 4;
-                    notifyStep.classList.add('active');
-                    notifyStep.querySelector('p').textContent =
-                        (decision === 'APPROVE' ? 'Sending approval notification' : 'Sending decline notification') +
-                        '.'.repeat(dots + 1);
-                }
-            } catch (e) { /* poll error, continue */ }
-        }
-        finishUI(decision, 'Timed out waiting for workflow.', decisionStep, buttons);
-    }
-
-    function finishUI(decision, responseText, decisionStep, buttons) {
-        const notifyStep  = document.getElementById('step-notify');
-        const btnsWrapper = document.getElementById('approvalButtons');
-        const submitBtn   = document.getElementById('submitBtn');
-
-        decisionStep.classList.remove('active','waiting');
-        decisionStep.classList.add('completed');
-        decisionStep.querySelector('p').textContent = decision === 'APPROVE'
-            ? '✅ Approved for underwriting'
-            : '❌ Application declined';
-
-        if (notifyStep) {
-            notifyStep.classList.remove('active','waiting');
-            notifyStep.classList.add('completed');
-            notifyStep.querySelector('p').textContent = decision === 'APPROVE'
-                ? 'Approval email sent to underwriting team.'
-                : 'Decline notification sent to loan officer.';
-        }
-
-        btnsWrapper?.classList.add('hidden');
-
-        // Completion banner
-        const banner = document.createElement('div');
-        banner.className = 'completion-banner ' + (decision === 'APPROVE' ? 'approved' : 'declined');
-
-        const h3 = document.createElement('h3');
-        h3.textContent = decision === 'APPROVE' ? '✅ Application Approved for Underwriting' : '❌ Application Declined';
-
-        const p = document.createElement('p');
-        p.textContent = decision === 'APPROVE'
-            ? 'The application passed pre-screening. Underwriting team has been notified for full review.'
-            : 'The application did not meet pre-screening criteria. Decline notification sent.';
-
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'btn-close';
-        closeBtn.textContent = '×';
-        closeBtn.onclick = () => banner.remove();
-
-        banner.appendChild(h3);
-        banner.appendChild(p);
-        banner.appendChild(closeBtn);
-        document.getElementById('progressSection').appendChild(banner);
-
-        showWorkflowSummary(decision);
-
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = '🚀 Start New Pre-Screening';
-        }
-    }
-
-    // Workflow summary at the end
-    const SUMMARY_ORDER = [
-        'upload', 'foundry_upload', 'invoke-extractor', 'invoke-analyzer',
-        'invoke-risk-scorer', 'approval', 'approval-question', 'approval_submit',
-        'invoke-approval-email', 'invoke-rejection-email'
-    ];
-
-    const stepLabels = {
-        'upload':                 { name: 'Document Upload',          icon: '📤' },
-        'foundry_upload':         { name: 'Foundry Vectorization',    icon: '☁️' },
-        'invoke-extractor':       { name: 'Application Extraction',   icon: '📄' },
-        'invoke-analyzer':        { name: 'Financial Analysis',       icon: '📊' },
-        'invoke-risk-scorer':     { name: 'Risk Assessment & Policy', icon: '⚠️' },
-        'approval-question':      { name: 'Underwriter Decision Gate',icon: '🔐' },
-        'approval_submit':        { name: 'Decision Processed',       icon: '✅' },
-        'invoke-approval-email':  { name: 'Approval Email Sent',      icon: '📧' },
-        'invoke-rejection-email': { name: 'Decline Email Sent',       icon: '📧' },
-    };
-
-    function showWorkflowSummary(decision) {
-        const div = document.createElement('div');
-        div.className = 'workflow-summary';
-
-        const h3 = document.createElement('h3');
-        h3.textContent = '📊 What Each Agent Did';
-        div.appendChild(h3);
-
-        const seen    = {};
-        const ordered = [];
-        SUMMARY_ORDER.forEach(key => {
-            if (workflowSteps[key] && !seen[key]) {
-                seen[key] = true;
-                ordered.push({ key, ...workflowSteps[key], info: stepLabels[key] || { name: key, icon: '🔹' } });
-            }
-        });
-        Object.keys(workflowSteps).forEach(key => {
-            if (!seen[key]) {
-                ordered.push({ key, ...workflowSteps[key], info: stepLabels[key] || { name: key, icon: '🔹' } });
-            }
-        });
-
-        ordered.forEach((step, i) => {
-            const stepDiv = document.createElement('div');
-            stepDiv.className = 'summary-step' + (step.status === 'error' ? ' error' : '');
-
-            const h4 = document.createElement('h4');
-            h4.innerHTML = `<span>${step.info.icon}</span> Step ${i+1}: ${step.info.name} <span style="opacity:0.7;font-weight:normal">${step.status === 'error' ? '❌' : '✅'}</span>`;
-            stepDiv.appendChild(h4);
-
-            const detailsDiv = document.createElement('div');
-            detailsDiv.className = 'step-details';
-
-            const raw     = (step.data && step.data.raw_output) || fullStepMessages[step.key] || step.message || 'Completed';
-            const cleaned = raw.trim().replace(/\n{3,}/g, '\n\n');
-            const isLong  = cleaned.length > 300;
-            const display = isLong ? cleaned.substring(0, 300) + '...' : cleaned;
-
-            const outDiv = document.createElement('div');
-            outDiv.style.cssText = 'background:#0f1f35;padding:10px;border-radius:6px;margin-top:6px;font-size:0.8rem;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow-y:auto;color:#e2e8f0;font-family:Consolas,monospace;';
-            outDiv.textContent = display;
-            outDiv.setAttribute('data-full', cleaned);
-            detailsDiv.appendChild(outDiv);
-
-            if (isLong) {
-                const btn = document.createElement('button');
-                btn.className   = 'toggle-details';
-                btn.textContent = 'Show Full Output';
-                btn.onclick = function() {
-                    if (btn.textContent === 'Show Full Output') {
-                        outDiv.textContent    = cleaned;
-                        outDiv.style.maxHeight = '500px';
-                        btn.textContent = 'Show Less';
-                    } else {
-                        outDiv.textContent    = display;
-                        outDiv.style.maxHeight = '180px';
-                        btn.textContent = 'Show Full Output';
-                    }
-                };
-                detailsDiv.appendChild(btn);
-            }
-
-            stepDiv.appendChild(detailsDiv);
-            div.appendChild(stepDiv);
-        });
-
-        document.getElementById('progressSection').appendChild(div);
-    }
+function resetRunBtn(){
+  const btn = document.getElementById('runBtn');
+  btn.disabled = false;
+  btn.textContent = '▶ Start New Pre-Screening';
+}
 </script>
 </body>
 </html>

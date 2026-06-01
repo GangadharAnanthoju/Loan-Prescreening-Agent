@@ -87,19 +87,13 @@ Use the above policies to check the applicant's loan type and validate each rule
 # (used for the progress panel in the UI)
 # -------------------------------------------------------------------------
 def _detect_step_id(text):
-    """Detect which agent produced this output based on content patterns."""
+    """Detect special node types. Agent order is handled by position counter."""
     t = text.upper()
-    if 'DEBT-TO-INCOME' in t or ('DTI' in t and 'LTV' in t and 'AFFORDABILITY' in t):
-        return 'invoke-analyzer'
-    if 'TOTAL RISK SCORE' in t or ('RISK LEVEL' in t and 'RECOMMENDATION' in t):
-        return 'invoke-risk-scorer'
-    if 'DEMO MODE' in t or 'EMAIL NOTIFICATION PREPARED' in t or 'NOTIFICATION EMAIL' in t:
+    if 'DEMO MODE' in t or 'EMAIL NOTIFICATION PREPARED' in t:
         return 'invoke-approval-email'
-    if ('APPLICANT NAME' in t or 'VERIFIED MONTHLY' in t) and 'LOAN AMOUNT' in t:
-        return 'invoke-extractor'
-    if 'UNDERWRITER DECISION' in t or ('APPROVE' in t and 'DECLINE' in t and 'TYPE' in t):
+    if 'UNDERWRITER DECISION REQUIRED' in t:
         return 'approval-question'
-    return None
+    return None  # let position-based counter handle the 4 agents
 
 
 def _extract_step_summary(action_id, text):
@@ -318,11 +312,15 @@ def run_workflow_until_approval(session_id, doc_text, uploaded_paths=None):
                 sessions[session_id]["conversation_id"] = conv.id
 
             # -- Helper: process streaming events from Foundry --
+            # Position-based fallback: agents always run in this order
+            AGENT_ORDER = ['invoke-extractor', 'invoke-analyzer', 'invoke-risk-scorer', 'invoke-notifier']
+
             def stream_and_emit(stream, label):
-                all_text         = []
-                last_text_index  = 0
-                last_action_id   = None
-                saw_approval_q   = False
+                all_text           = []
+                last_text_index    = 0
+                last_action_id     = None
+                saw_approval_q     = False
+                agent_invoke_count = 0
 
                 for event in stream:
                     if event.type == "response.failed":
@@ -356,8 +354,18 @@ def run_workflow_until_approval(session_id, doc_text, uploaded_paths=None):
                                 last_text_index = len(all_text)
                                 continue
 
-                            summary    = _extract_step_summary(aid, step_text)
-                            mapped_id  = summary.get("detected_id") or aid
+                            summary  = _extract_step_summary(aid, step_text)
+                            detected = summary.get("detected_id")
+
+                            # Fallback: use position if content detection fails
+                            if not detected:
+                                if agent_invoke_count < len(AGENT_ORDER):
+                                    detected = AGENT_ORDER[agent_invoke_count]
+                                agent_invoke_count += 1
+                            elif detected in AGENT_ORDER:
+                                agent_invoke_count += 1
+
+                            mapped_id      = detected or aid
                             last_action_id = mapped_id
 
                             # Detect approval gate
