@@ -1,0 +1,198 @@
+# =============================================================================
+# MICROSOFT FOUNDRY MULTI-AGENT WORKFLOW
+# Loan Application Pre-Screening
+# =============================================================================
+#
+# WHAT THIS DOES:
+#   Automatically pre-screens loan applications using 4 AI agents chained
+#   together. Each agent does one specific job and passes its output to
+#   the next agent.
+#
+# THE 4 AGENTS:
+#   1. loan-doc-extractor      Reads the application + income docs, pulls out key fields
+#   2. loan-financial-analyzer Calculates DTI ratio, LTV ratio, affordability
+#   3. loan-risk-scorer        Checks policy rules, scores risk 0–100, recommends decision
+#   4. loan-notifier           Sends email after underwriter clicks Approve or Decline
+#
+# HOW AGENTS CHAIN (important Foundry pattern):
+#   First agent  → input.messages: =System.LastMessage   (reads what the user typed)
+#   All others   → input.messages: =Local.LatestMessage  (reads the previous agent's output)
+#
+# WHAT YOU NEED TO CREATE IN MICROSOFT FOUNDRY PORTAL FIRST:
+#   - loan-doc-extractor      (no MCP tools)
+#   - loan-financial-analyzer (no MCP tools)
+#   - loan-risk-scorer        (no MCP tools)
+#   - loan-notifier           (MCP tool: outlookworkflowemail)
+#
+# NOTE ON POLICY DATA:
+#   No database needed! The Flask backend (loan_portal.py) reads loan_policies.json
+#   and appends the policy rules to the document text before sending to this workflow.
+#   The loan-risk-scorer agent reads those rules directly from the conversation.
+#
+# =============================================================================
+
+kind: workflow
+trigger:
+  kind: OnConversationStart
+  id: trigger_loan_wf
+  actions:
+
+    # =========================================================================
+    # STEP 1: Generate a unique Case ID
+    # =========================================================================
+    - kind: SetVariable
+      id: init-case-id
+      variable: Local.case_id
+      value: ="LOAN-" & System.ConversationId
+
+    # =========================================================================
+    # STEP 2: Collect documents from the user
+    #
+    # The Flask portal sends:
+    #   - Loan Application text
+    #   - Income Verification text
+    #   - Lending policy rules (from loan_policies.json)
+    # All combined into one message.
+    # =========================================================================
+    - kind: Question
+      id: get-documents
+      variable: Local.loan_documents
+      entity: StringPrebuiltEntity
+      prompt: |
+        Welcome to the Loan Pre-Screening Workflow 🏦
+        Case ID: {{Local.case_id}}
+
+        Please paste the Loan Application and Income Verification documents below.
+
+    # =========================================================================
+    # STEP 3: Extract structured data from both documents
+    #
+    # Agent reads: application text + income text
+    # Agent outputs: structured list of all applicant fields
+    # =========================================================================
+    - kind: InvokeAzureAgent
+      id: invoke-extractor
+      agent:
+        name: loan-doc-extractor
+      description: Extract applicant info, loan details, and income data from documents
+      conversationId: =System.ConversationId
+      input:
+        messages: =System.LastMessage      # First agent — reads user input directly
+      output:
+        messages: Local.LatestMessage
+        autoSend: true
+
+    # =========================================================================
+    # STEP 4: Calculate financial ratios
+    #
+    # Agent reads: extracted fields from Step 3
+    # Agent outputs: DTI ratio, LTV ratio, income consistency check, payment estimate
+    # =========================================================================
+    - kind: InvokeAzureAgent
+      id: invoke-analyzer
+      agent:
+        name: loan-financial-analyzer
+      description: Calculate DTI, LTV, and affordability ratios
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage    # Reads extractor output
+      output:
+        messages: Local.LatestMessage
+        autoSend: true
+
+    # =========================================================================
+    # STEP 5: Check policy rules and score risk
+    #
+    # Agent reads: extracted data + financial ratios + policy JSON (all in conversation)
+    # Agent outputs: policy pass/fail per rule + risk score (0-100) + recommendation
+    # =========================================================================
+    - kind: InvokeAzureAgent
+      id: invoke-risk-scorer
+      agent:
+        name: loan-risk-scorer
+      description: Check lending policy compliance and calculate risk score 0-100
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.LatestMessage    # Reads analyzer output (includes policy JSON)
+      output:
+        messages: Local.LatestMessage
+        autoSend: true
+
+    # =========================================================================
+    # STEP 6: Underwriter Decision Gate (Human-in-the-Loop)
+    #
+    # The web portal shows APPROVE / DECLINE buttons.
+    # The underwriter reviews the risk assessment and clicks one.
+    # =========================================================================
+    - kind: Question
+      id: approval-question
+      variable: Local.underwriter_decision
+      entity: StringPrebuiltEntity
+      prompt: |
+        🔐 UNDERWRITER DECISION REQUIRED
+        Case ID: {{Local.case_id}}
+
+        Review the risk assessment above and make your decision.
+
+        Type APPROVE or DECLINE:
+
+    # =========================================================================
+    # STEP 7: Route based on underwriter's decision
+    # =========================================================================
+    - kind: ConditionGroup
+      id: check-decision
+      conditions:
+
+        # ----- APPROVED: Send approval email to underwriting team -----
+        - condition: =Upper(Local.underwriter_decision) = "APPROVE" Or Upper(Local.underwriter_decision) = "YES"
+          id: condition-approved
+          actions:
+            - kind: InvokeAzureAgent
+              id: invoke-approval-email
+              agent:
+                name: loan-notifier
+              description: Send approval notification to underwriting team
+              conversationId: =System.ConversationId
+              input:
+                messages: =Local.LatestMessage
+              output:
+                messages: Local.LatestMessage
+                autoSend: true
+
+        # ----- DECLINED: Send decline notification to loan officer -----
+        - condition: =Upper(Local.underwriter_decision) = "DECLINE" Or Upper(Local.underwriter_decision) = "NO" Or Upper(Local.underwriter_decision) = "REJECT"
+          id: condition-declined
+          actions:
+            - kind: InvokeAzureAgent
+              id: invoke-rejection-email
+              agent:
+                name: loan-notifier
+              description: Send decline notification to loan officer
+              conversationId: =System.ConversationId
+              input:
+                messages: =Local.LatestMessage
+              output:
+                messages: Local.LatestMessage
+                autoSend: true
+
+      # ----- Invalid input: ask again -----
+      elseActions:
+        - kind: GotoAction
+          id: goto-decision
+          actionId: approval-question
+
+    # =========================================================================
+    # STEP 8: Done
+    # =========================================================================
+    - kind: EndConversation
+      id: end-workflow
+
+# =============================================================================
+# WORKFLOW METADATA
+# =============================================================================
+id: ""
+name: Loan-Prescreening-Workflow
+description: |
+  Loan application pre-screening using 4 AI agents on Microsoft Foundry.
+  Lending policies loaded from loan_policies.json — no database needed.
+  Agents: loan-doc-extractor, loan-financial-analyzer, loan-risk-scorer, loan-notifier

@@ -1,0 +1,69 @@
+====================================================
+INCOME VERIFICATION DOCUMENT — SELF-EMPLOYED
+====================================================
+Applicant: Sarah Lin Chen
+Document Prepared by: FastTrack CPA Services
+CPA Firm License: TX-CPA-884721
+Document Date: 2026-05-18
+
+----------------------------------------------------
+BUSINESS INFORMATION
+----------------------------------------------------
+Business Name:          ChenDesign Studio LLC
+Business Type:          LLC — Single Member
+Business Start Date:    2023-03-10
+Industry:               Graphic Design & Creative Services
+Business Address:       881 Market Street, Apt 4B, San Francisco, CA 94102
+EIN:                    82-4471903
+
+----------------------------------------------------
+VERIFIED INCOME (from Tax Returns & Bank Statements)
+----------------------------------------------------
+Year 2024 — Schedule C Net Profit:   $76,200
+Year 2025 — Schedule C Net Profit:   $89,400
+
+2-Year Average Annual Income:        $82,800
+Verified Monthly Gross Income:       $6,900  ($82,800 ÷ 12)
+
+Note: Business income is irregular. Monthly deposits ranged from
+$4,200 to $11,800. The 24-month average is used per agency guidelines.
+
+----------------------------------------------------
+RECENT BANK STATEMENT SUMMARY (Business Account)
+----------------------------------------------------
+March 2026:   Deposits $9,200  |  Business Expenses $6,100  |  Net $3,100
+April 2026:   Deposits $7,800  |  Business Expenses $5,400  |  Net $2,400
+May 2026:     Deposits $5,100  |  Business Expenses $4,200  |  Net $900
+
+3-Month Average Monthly Net Cash Flow: $2,133
+
+----------------------------------------------------
+INCOME SOURCE
+----------------------------------------------------
+Primary Income Type:    Self-Employment (Schedule C)
+Income Consistency:     Moderate — fluctuates with project cycles
+Employer Stability:     Self-employed 3+ years (meets minimum threshold)
+
+----------------------------------------------------
+CPA CERTIFICATION
+----------------------------------------------------
+I certify that the above income figures are based on filed tax returns
+(2024 and 2025 Form 1040 with Schedule C) and business bank statements
+provided by the applicant.
+
+Marcus T. Rivera, CPA
+FastTrack CPA Services
+License: TX-CPA-884721
+Date: 2026-05-18
+====================================================
+
+EXPECTED OUTCOME (for testing):
+  Verified Monthly Income: $6,900 (2-year avg)
+  Self-Reported Income:    $9,200
+  Difference:              33% → INCONSISTENT (>10% threshold)
+  DTI = $2,740 / $6,900 = 39.7% → ACCEPTABLE but borderline
+  LTV = $420,000 / $480,000 = 87.5% → Acceptable (PMI required)
+  Credit Score: 665 → above Conventional minimum (620) but not great
+  Income mismatch + borderline credit + self-employed variability
+  EXPECTED RISK: MEDIUM-HIGH (40–65) → Recommend REFER to Underwriter
+====================================================

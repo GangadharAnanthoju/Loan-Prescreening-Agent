@@ -1,0 +1,62 @@
+====================================================
+LOAN APPLICATION FORM
+====================================================
+Institution: Northbridge Lending Corp
+Application Date: 2026-05-22
+Application ID: APP-2026-003
+
+----------------------------------------------------
+APPLICANT INFORMATION
+----------------------------------------------------
+Full Name:              Robert Alan Williams
+Date of Birth:          1992-11-05
+SSN Last 4 Digits:      5519
+Phone:                  (702) 555-0338
+Email:                  r.williams.work@gmail.com
+Address:                220 Desert Breeze Blvd, Apt 12, Las Vegas, NV 89101
+
+----------------------------------------------------
+LOAN REQUEST
+----------------------------------------------------
+Loan Purpose:           Home Purchase
+Loan Type:              Conventional
+Loan Amount Requested:  $195,000
+Loan Term:              30 years
+Property Address:       78 Sunrise Court, Henderson, NV 89002
+Property Value:         $200,000
+
+----------------------------------------------------
+APPLICANT FINANCIAL PROFILE (Self-Reported)
+----------------------------------------------------
+Credit Score (Self-Reported):         595
+Monthly Gross Income (Self-Reported): $4,200
+
+Monthly Debt Payments (all debts):
+  - Credit card 1 (Capital One):      $280/month
+  - Credit card 2 (Discover):         $195/month
+  - Personal loan (Lending Club):     $420/month
+  - Medical collections:              $150/month
+  - Payday loan repayment:            $300/month
+  Total Monthly Debt Payments:        $1,345/month
+
+----------------------------------------------------
+EMPLOYMENT INFORMATION
+----------------------------------------------------
+Employment Type:        Employed (Full-Time)
+Employer Name:          Desert Sun Warehouse Services
+Job Title:              Warehouse Associate
+Years at Current Employer: 0 years 8 months
+Previous Employer:      Quick Retail Inc. (left 9 months ago after layoff)
+Work Address:           4800 Industrial Way, Las Vegas, NV 89103
+
+----------------------------------------------------
+DECLARATIONS
+----------------------------------------------------
+Bankruptcy in last 7 years: No (Chapter 7 discharged 8 years ago — not required to disclose)
+Foreclosure in last 7 years: No
+Pending lawsuits: No
+US Citizen: Yes
+
+Applicant Signature: Robert A. Williams
+Date: 2026-05-22
+====================================================

@@ -1,0 +1,59 @@
+{
+  "_description": "Lending policy rules loaded by loan_portal.py and injected into the workflow conversation. No database needed — edit this file to change policy rules.",
+
+  "loan_types": {
+    "Conventional": {
+      "min_credit_score": 620,
+      "max_dti_percent": 43,
+      "max_ltv_percent": 97,
+      "max_loan_amount": 726200,
+      "min_employment_years": 2,
+      "notes": "Standard conforming loan. PMI required if LTV > 80%."
+    },
+    "FHA": {
+      "min_credit_score": 580,
+      "max_dti_percent": 50,
+      "max_ltv_percent": 96.5,
+      "max_loan_amount": 472030,
+      "min_employment_years": 2,
+      "notes": "FHA-insured loan. Lower credit threshold but requires mortgage insurance premium."
+    },
+    "VA": {
+      "min_credit_score": 580,
+      "max_dti_percent": 41,
+      "max_ltv_percent": 100,
+      "max_loan_amount": 726200,
+      "min_employment_years": 2,
+      "notes": "VA loan for eligible veterans. No down payment required. No PMI."
+    },
+    "Jumbo": {
+      "min_credit_score": 700,
+      "max_dti_percent": 38,
+      "max_ltv_percent": 80,
+      "max_loan_amount": 2000000,
+      "min_employment_years": 2,
+      "notes": "Loan above conforming limit. Stricter requirements. Strong credit required."
+    },
+    "Personal": {
+      "min_credit_score": 640,
+      "max_dti_percent": 45,
+      "max_ltv_percent": null,
+      "max_loan_amount": 50000,
+      "min_employment_years": 1,
+      "notes": "Unsecured personal loan. No property collateral. Higher rate."
+    }
+  },
+
+  "general_rules": {
+    "max_income_variance_percent": 10,
+    "income_check_note": "If self-reported income differs from verified income by more than 10%, flag as INCONSISTENT.",
+    "approved_loan_types": ["Conventional", "FHA", "VA", "Jumbo", "Personal"],
+    "currency": "USD"
+  },
+
+  "risk_score_thresholds": {
+    "low": {"min": 0, "max": 30, "recommendation": "APPROVE"},
+    "medium": {"min": 31, "max": 60, "recommendation": "REFER to Senior Underwriter"},
+    "high": {"min": 61, "max": 100, "recommendation": "DECLINE"}
+  }
+}

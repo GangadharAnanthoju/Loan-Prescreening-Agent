@@ -1,0 +1,60 @@
+====================================================
+LOAN APPLICATION FORM
+====================================================
+Institution: Northbridge Lending Corp
+Application Date: 2026-05-20
+Application ID: APP-2026-001
+
+----------------------------------------------------
+APPLICANT INFORMATION
+----------------------------------------------------
+Full Name:              Michael James Johnson
+Date of Birth:          1985-03-14
+SSN Last 4 Digits:      7842
+Phone:                  (512) 555-0192
+Email:                  michael.johnson@email.com
+Address:                4521 Oakwood Drive, Austin, TX 78701
+
+----------------------------------------------------
+LOAN REQUEST
+----------------------------------------------------
+Loan Purpose:           Home Purchase
+Loan Type:              Conventional
+Loan Amount Requested:  $280,000
+Loan Term:              30 years
+Property Address:       4521 Oakwood Drive, Austin, TX 78701
+Property Value:         $350,000
+
+----------------------------------------------------
+APPLICANT FINANCIAL PROFILE (Self-Reported)
+----------------------------------------------------
+Credit Score (Self-Reported):       740
+Monthly Gross Income (Self-Reported): $8,500
+
+Monthly Debt Payments (all debts):
+  - Car loan:                       $420/month
+  - Credit card minimum:            $180/month
+  - Student loan:                   $230/month
+  - Other debts:                    $0
+  Total Monthly Debt Payments:      $830/month
+
+----------------------------------------------------
+EMPLOYMENT INFORMATION
+----------------------------------------------------
+Employment Type:        Employed (Full-Time)
+Employer Name:          TechCorp Solutions Inc.
+Job Title:              Senior Software Engineer
+Years at Current Employer: 5 years 8 months
+Work Address:           200 Congress Ave, Austin, TX 78701
+
+----------------------------------------------------
+DECLARATIONS
+----------------------------------------------------
+Bankruptcy in last 7 years: No
+Foreclosure in last 7 years: No
+Pending lawsuits: No
+US Citizen: Yes
+
+Applicant Signature: Michael J. Johnson
+Date: 2026-05-20
+====================================================

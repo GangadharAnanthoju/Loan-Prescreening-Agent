@@ -1,0 +1,84 @@
+====================================================
+INCOME VERIFICATION DOCUMENT
+====================================================
+Applicant: Robert Alan Williams
+Prepared by: Desert Sun Warehouse Services — HR Dept.
+Document Date: 2026-05-20
+Verification Period: September 2025 – May 2026
+
+----------------------------------------------------
+EMPLOYMENT VERIFICATION
+----------------------------------------------------
+Employer:               Desert Sun Warehouse Services
+Employer Address:       4800 Industrial Way, Las Vegas, NV 89103
+Employer Phone:         (702) 555-4400
+HR Contact:             Donna Price, HR Coordinator
+
+Employee Name:          Robert Alan Williams
+Employee ID:            DSW-1847
+Job Title:              Warehouse Associate
+Department:             Receiving & Inventory
+Start Date:             2025-09-15
+Employment Status:      Active — Full-Time
+Pay Frequency:          Weekly
+
+----------------------------------------------------
+INCOME BREAKDOWN (Monthly)
+----------------------------------------------------
+Base Hourly Rate:       $18.50/hour
+Average Hours/Week:     38 hours
+Gross Weekly Pay:       $703.00
+Estimated Monthly:      $3,046.00  (703 × 4.33)
+
+Overtime (last 3 months avg): $280/month
+Total Verified Monthly Gross: $3,326.00
+
+Note: Overtime is not guaranteed and may not be included in
+qualifying income per standard underwriting guidelines.
+Base income only: $3,046/month
+
+----------------------------------------------------
+RECENT PAY STUBS SUMMARY
+----------------------------------------------------
+Week of 2026-05-05:
+  Regular Hours: 38 | OT Hours: 4
+  Gross Pay: $703.00 + $111.00 OT = $814.00
+  Net Pay (after deductions): $612.00
+
+Week of 2026-04-28:
+  Regular Hours: 38 | OT Hours: 0
+  Gross Pay: $703.00
+  Net Pay: $528.00
+
+Week of 2026-04-21:
+  Regular Hours: 38 | OT Hours: 6
+  Gross Pay: $703.00 + $166.50 OT = $869.50
+  Net Pay: $652.00
+
+----------------------------------------------------
+INCOME SOURCE
+----------------------------------------------------
+Primary Income Type:    Hourly Wage (W-2)
+Employer Stability:     8 months at current employer
+Previous Employment:    Quick Retail Inc. (Jan 2023 – Aug 2025, laid off)
+Employment Gap:         1 month gap between jobs (Aug–Sep 2025)
+
+----------------------------------------------------
+AUTHORIZED SIGNATURE
+----------------------------------------------------
+Donna Price
+HR Coordinator, Desert Sun Warehouse Services
+Date: 2026-05-20
+====================================================
+
+EXPECTED OUTCOME (for testing):
+  Verified Monthly Income: $3,046 (base only, OT excluded)
+  Self-Reported Income:    $4,200
+  Difference:              38% → INCONSISTENT (far exceeds 10% threshold)
+  DTI = $1,345 / $3,046 = 44.1% → HIGH RISK threshold
+  LTV = $195,000 / $200,000 = 97.5% → EXCEEDS Conventional max (97%)
+  Credit Score: 595 → BELOW Conventional minimum (620)
+  Employment: 8 months → BELOW 2-year minimum
+  Multiple POLICY FAILURES
+  EXPECTED RISK: HIGH (70–90) → Recommend DECLINE
+====================================================

@@ -1,0 +1,62 @@
+====================================================
+LOAN APPLICATION FORM
+====================================================
+Institution: Northbridge Lending Corp
+Application Date: 2026-05-21
+Application ID: APP-2026-002
+
+----------------------------------------------------
+APPLICANT INFORMATION
+----------------------------------------------------
+Full Name:              Sarah Lin Chen
+Date of Birth:          1988-07-22
+SSN Last 4 Digits:      3391
+Phone:                  (415) 555-0744
+Email:                  sarah.chen@designstudio.com
+Address:                881 Market Street, Apt 4B, San Francisco, CA 94102
+
+----------------------------------------------------
+LOAN REQUEST
+----------------------------------------------------
+Loan Purpose:           Home Purchase
+Loan Type:              Conventional
+Loan Amount Requested:  $420,000
+Loan Term:              30 years
+Property Address:       1102 Birchwood Lane, Oakland, CA 94601
+Property Value:         $480,000
+
+----------------------------------------------------
+APPLICANT FINANCIAL PROFILE (Self-Reported)
+----------------------------------------------------
+Credit Score (Self-Reported):         665
+Monthly Gross Income (Self-Reported): $9,200
+
+Monthly Debt Payments (all debts):
+  - Business credit card:             $680/month
+  - Personal credit card:             $320/month
+  - Car lease:                        $510/month
+  - Student loan:                     $480/month
+  - Business equipment loan:          $750/month
+  Total Monthly Debt Payments:        $2,740/month
+
+----------------------------------------------------
+EMPLOYMENT INFORMATION
+----------------------------------------------------
+Employment Type:        Self-Employed
+Business Name:          ChenDesign Studio LLC
+Business Type:          Graphic Design & Creative Agency
+Years in Business:      3 years 2 months
+Years Filing as Self-Employed: 3 years
+Annual Business Revenue (Self-Reported): $110,400
+
+----------------------------------------------------
+DECLARATIONS
+----------------------------------------------------
+Bankruptcy in last 7 years: No
+Foreclosure in last 7 years: No
+Pending lawsuits: No
+US Citizen: Yes
+
+Applicant Signature: Sarah L. Chen
+Date: 2026-05-21
+====================================================

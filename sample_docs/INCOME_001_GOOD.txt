@@ -1,0 +1,75 @@
+====================================================
+INCOME VERIFICATION DOCUMENT
+====================================================
+Applicant: Michael James Johnson
+Prepared by: TechCorp Solutions Inc. — Payroll Dept.
+Document Date: 2026-05-15
+Verification Period: January 2026 – May 2026
+
+----------------------------------------------------
+EMPLOYMENT VERIFICATION
+----------------------------------------------------
+Employer:               TechCorp Solutions Inc.
+Employer Address:       200 Congress Ave, Austin, TX 78701
+Employer Phone:         (512) 555-8800
+HR Contact:             Jennifer Walsh, HR Manager
+
+Employee Name:          Michael James Johnson
+Employee ID:            EMP-00482
+Job Title:              Senior Software Engineer
+Department:             Platform Engineering
+Start Date:             2020-09-01
+Employment Status:      Active — Full-Time Permanent
+Pay Frequency:          Bi-weekly
+
+----------------------------------------------------
+INCOME BREAKDOWN (Monthly)
+----------------------------------------------------
+Base Salary:            $7,916.67 / month  ($95,000 annual)
+Performance Bonus:      $500.00 / month    (avg over 12 months)
+Total Gross Monthly:    $8,416.67
+
+----------------------------------------------------
+RECENT PAY STUBS SUMMARY
+----------------------------------------------------
+Pay Period 2026-04-16 to 2026-04-30:
+  Gross Pay:    $4,166.67
+  Federal Tax:  $625.00
+  State Tax:    $291.67
+  FICA:         $318.75
+  Net Pay:      $2,931.25
+
+Pay Period 2026-05-01 to 2026-05-15:
+  Gross Pay:    $4,166.67
+  Federal Tax:  $625.00
+  State Tax:    $291.67
+  FICA:         $318.75
+  Net Pay:      $2,931.25
+
+----------------------------------------------------
+INCOME SOURCE
+----------------------------------------------------
+Primary Income Type:    Salary (W-2 Employee)
+Employer Stability:     5+ years continuous employment
+Additional Income:      None declared
+
+----------------------------------------------------
+AUTHORIZED SIGNATURE
+----------------------------------------------------
+This document is issued by TechCorp Solutions Inc. Payroll Department
+and confirms the employment and income details of the above employee.
+
+Jennifer Walsh
+HR Manager, TechCorp Solutions Inc.
+Date: 2026-05-15
+====================================================
+
+EXPECTED OUTCOME (for testing):
+  Verified Monthly Income: $8,416.67
+  Self-Reported Income:    $8,500.00
+  Difference:              ~1% → CONSISTENT
+  DTI = $830 / $8,417 = 9.9% → EXCELLENT
+  LTV = $280,000 / $350,000 = 80% → EXCELLENT
+  Credit Score: 740 → meets Conventional minimum (620)
+  EXPECTED RISK: LOW (0–30) → Recommend APPROVE
+====================================================
