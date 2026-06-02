@@ -145,7 +145,7 @@ def _extract_step_summary(action_id, text):
         summary = "Risk assessment: " + ", ".join(parts) if parts else "Risk scored"
 
     elif resolved in ("invoke-approval-email", "invoke-rejection-email"):
-        summary = "Notification email prepared"
+        summary = "Notification email sent to support@sysintinc.com"
 
     else:
         lines = [l.strip() for l in text.split("\n") if l.strip()]
@@ -580,7 +580,7 @@ def run_workflow_approval(session_id, decision):
                         })
                         emit(session_id, {
                             "type": "step", "step": mapped_id, "status": "completed",
-                            "message": summary.get("summary", "Notification prepared"),
+                            "message": summary.get("summary", "Notification email sent to support@sysintinc.com"),
                             "data":    summary.get("details"),
                             "timestamp": _utc_ts(),
                         })
