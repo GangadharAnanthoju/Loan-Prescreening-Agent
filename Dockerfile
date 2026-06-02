@@ -11,6 +11,7 @@ COPY loan_portal.py .
 COPY loan_policies.json .
 COPY portal/ ./portal/
 COPY sample_docs/ ./sample_docs/
+COPY assets/ ./assets/
 
 # Uploads folder for temporary file storage
 RUN mkdir -p uploads
