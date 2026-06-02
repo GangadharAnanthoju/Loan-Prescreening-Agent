@@ -89,8 +89,10 @@ Use the above policies to check the applicant's loan type and validate each rule
 def _detect_step_id(text):
     """Detect special node types. Agent order is handled by position counter."""
     t = text.upper()
-    if 'DEMO MODE' in t or 'EMAIL NOTIFICATION PREPARED' in t:
+    # Notifier — detect by email sent confirmation or demo mode
+    if 'NOTIFICATION EMAIL SENT' in t or 'DEMO MODE' in t or 'EMAIL NOTIFICATION PREPARED' in t:
         return 'invoke-approval-email'
+    # Approval question gate
     if 'UNDERWRITER DECISION REQUIRED' in t:
         return 'approval-question'
     return None  # let position-based counter handle the 4 agents
@@ -547,6 +549,7 @@ def run_workflow_approval(session_id, decision):
                 extra_body={"agent_reference": {"name": WORKFLOW_NAME, "type": "agent_reference"}},
                 input=decision,
                 stream=True,
+                timeout=120,
                 metadata={"x-ms-debug-mode-enabled": "1"},
             )
             for event in stream:
