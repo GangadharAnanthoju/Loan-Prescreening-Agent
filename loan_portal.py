@@ -634,6 +634,20 @@ def index():
     return send_from_directory(PORTAL_DIR, "loan.html")
 
 
+@app.route("/samples/<filename>")
+def download_sample(filename):
+    """Serve sample documents for download — only allows known safe filenames."""
+    allowed = {
+        "LOAN_APP_001_GOOD.txt", "INCOME_001_GOOD.txt",
+        "LOAN_APP_002_HIGH_DTI.txt", "INCOME_002_HIGH_DTI.txt",
+        "LOAN_APP_003_DECLINE.txt", "INCOME_003_DECLINE.txt",
+        "LOAN_APP_001_GOOD.pdf", "LOAN_APP_002_HIGH_DTI.pdf", "LOAN_APP_003_DECLINE.pdf",
+    }
+    if filename not in allowed:
+        return Response("Not found", status=404)
+    return send_from_directory(BASE_DIR / "sample_docs", filename, as_attachment=True)
+
+
 @app.route("/api/upload", methods=["POST"])
 def api_upload():
     if "application" not in request.files or "income" not in request.files:

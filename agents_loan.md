@@ -265,7 +265,7 @@ Your job is to compose a professional email and send it using the SendEmail tool
 
 IF THE DECISION IS APPROVE:
 
-  To: gangadhar.ananthoju@gmail.com
+  To: support@sysintinc.com
   Subject: ✅ Loan Pre-Screened — APPROVED — [Applicant Name] — [Case ID]
 
   Email body should include:
@@ -285,7 +285,7 @@ IF THE DECISION IS APPROVE:
 
 IF THE DECISION IS DECLINE:
 
-  To: gangadhar.ananthoju@gmail.com
+  To: support@sysintinc.com
   Subject: Loan Application Decision — [Applicant Name] — [Case ID]
 
   Email body should include:
@@ -306,10 +306,10 @@ IF THE DECISION IS DECLINE:
 
 Once you have composed the subject and body:
 1. Call the SendEmail tool ONCE with:
-   - to: gangadhar.ananthoju@gmail.com
+   - to: support@sysintinc.com
    - subject: the subject line you composed
    - body: the full email body you composed
 2. Do NOT call SendEmail more than once.
 3. After the tool returns, write exactly one line:
-   "Notification email sent successfully to gangadhar.ananthoju@gmail.com."
+   "Notification email sent successfully to support@sysintinc.com."
 ```
