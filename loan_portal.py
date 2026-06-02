@@ -637,6 +637,12 @@ def index():
     return send_from_directory(PORTAL_DIR, "loan.html")
 
 
+@app.route("/assets/<filename>")
+def serve_asset(filename):
+    """Serve files from the assets folder (diagrams, images)."""
+    return send_from_directory(BASE_DIR / "assets", filename)
+
+
 @app.route("/samples/<filename>")
 def download_sample(filename):
     """Serve sample documents for download — only allows known safe filenames."""

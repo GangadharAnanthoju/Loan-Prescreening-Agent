@@ -164,9 +164,24 @@ body{font-family:'Montserrat',sans-serif;background:#07111e;min-height:100vh;col
 @keyframes fade-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
 .hidden{display:none!important}
+
+.demo-banner{background:linear-gradient(90deg,rgba(0,201,167,0.12),rgba(14,165,233,0.12));border-bottom:1px solid rgba(0,201,167,0.2);padding:8px 24px;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}
+.demo-banner .db-tag{background:rgba(0,201,167,0.2);border:1px solid rgba(0,201,167,0.4);color:#00c9a7;font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;flex-shrink:0}
+.demo-banner .db-text{font-size:0.72rem;color:#94a3b8;font-weight:400}
+.demo-banner .db-text strong{color:#e2e8f0;font-weight:600}
 </style>
 </head>
 <body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  <span class="db-tag">Portfolio Demo</span>
+  <span class="db-text">
+    This showcases a <strong>Microsoft Foundry Multi-Agent AI Workflow</strong> with <strong>MCP Tools</strong> —
+    4 chained AI agents pre-screen loan applications, score risk, and notify underwriters automatically.
+    Built by <strong style="color:#00c9a7">Gangadhar Ananthoju</strong>.
+  </span>
+</div>
 
 <!-- TOP BAR -->
 <div class="topbar">
@@ -261,13 +276,19 @@ body{font-family:'Montserrat',sans-serif;background:#07111e;min-height:100vh;col
       </div>
     </div>
 
-    <!-- Footer credit -->
-    <div style="margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,0.06);text-align:center">
-      <div style="font-size:0.68rem;color:#64748b;font-weight:500;line-height:1.7">
-        Developed by<br>
-        <span style="color:#00c9a7;font-weight:700">Gangadhar Ananthoju</span><br>
-        <span style="color:#475569">Microsoft Foundry · Multi-Agent AI</span>
-      </div>
+    <!-- Architecture Diagram Link -->
+    <div style="margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,0.06)">
+      <a href="/assets/architecure_diagram.png" target="_blank"
+         style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);text-decoration:none;transition:.2s;"
+         onmouseover="this.style.background='rgba(0,201,167,0.06)';this.style.borderColor='rgba(0,201,167,0.3)'"
+         onmouseout="this.style.background='rgba(255,255,255,0.02)';this.style.borderColor='rgba(255,255,255,0.07)'">
+        <span style="font-size:1.1rem">🗺️</span>
+        <div>
+          <div style="font-size:0.72rem;font-weight:600;color:#e2e8f0">Architecture Diagram</div>
+          <div style="font-size:0.62rem;color:#475569;margin-top:1px">View system design</div>
+        </div>
+        <span style="margin-left:auto;font-size:0.65rem;color:#334155">↗</span>
+      </a>
     </div>
 
   </div>
