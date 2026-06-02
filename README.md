@@ -33,6 +33,10 @@ The underwriter remains in control — the AI handles the data work, the human m
 
 ![System Architecture](assets/architecure_diagram.png)
 
+## Foundry Workflow
+
+![Foundry Workflow](assets/workflow.jpg)
+
 **Key design decisions:**
 - **No database** — lending policy rules live in `loan_policies.json`, injected into the workflow as text
 - **PDF extraction** — Azure Document Intelligence custom model extracts fields at 0.99 confidence before agents run
