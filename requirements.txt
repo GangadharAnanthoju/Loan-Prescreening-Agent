@@ -2,6 +2,4 @@ flask
 azure-identity
 azure-ai-projects
 python-dotenv
-
-# Uncomment when enabling the Document Intelligence extension (scanned PDFs)
-# azure-ai-documentintelligence
+azure-ai-documentintelligence

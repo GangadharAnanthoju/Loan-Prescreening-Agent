@@ -211,6 +211,97 @@ if env_path.exists():
         pass
 
 # -------------------------------------------------------------------------
+# Document Intelligence — Option B (loan application PDF → custom model)
+# Income proof stays as plain text → loan-doc-extractor agent handles it
+# -------------------------------------------------------------------------
+def extract_text_from_file(file_path, is_loan_application=False):
+    """
+    Extract text from an uploaded file.
+    - Loan application PDF  → Document Intelligence custom model (structured fields)
+    - Income proof (any format) → plain text read (agent handles any format)
+    """
+    path = Path(file_path)
+
+    # Read DI config at call time (after load_dotenv has run)
+    DI_ENDPOINT = os.environ.get("DOCUMENT_INTELLIGENCE_ENDPOINT", "")
+    DI_KEY      = os.environ.get("DOCUMENT_INTELLIGENCE_KEY", "")
+
+    print(f"[DI] Processing: {path.name} (is_app={is_loan_application})")
+
+    # Loan application PDF → custom DI model extracts structured fields
+    if is_loan_application and path.suffix.lower() == ".pdf" and DI_ENDPOINT and DI_KEY:
+        try:
+            from azure.ai.documentintelligence import DocumentIntelligenceClient
+            from azure.core.credentials import AzureKeyCredential
+
+            DI_MODEL = os.environ.get("DOCUMENT_INTELLIGENCE_MODEL_ID", "prebuilt-read")
+            print(f"[DI] Running custom model '{DI_MODEL}' on {path.name}")
+
+            client = DocumentIntelligenceClient(
+                endpoint=DI_ENDPOINT,
+                credential=AzureKeyCredential(DI_KEY)
+            )
+            with open(path, "rb") as f:
+                poller = client.begin_analyze_document(DI_MODEL, f)
+                result = poller.result()
+
+            if not result.documents:
+                print("[DI] WARNING: model returned no documents — check model ID")
+            else:
+                print(f"[DI] Extracted {len(result.documents[0].fields)} fields (confidence={result.documents[0].confidence:.2f})")
+
+            fields = result.documents[0].fields if result.documents else {}
+
+            # Use .content (raw OCR text) — works for all field types
+            def get_val(key):
+                f = fields.get(key)
+                if not f or not f.content:
+                    return None
+                return str(f.content).strip()
+
+            # Map DI field names → labels the loan-doc-extractor agent expects
+            FIELD_MAP = {
+                "loan_amount":        "Loan Amount Requested ($)",
+                "loan_purpose":       "Loan Purpose",
+                "loan_type":          "Loan Type",
+                "loan_term":          "Loan Term (years)",
+                "property_value":     "Property Value ($)",
+                "credit_score":       "Credit Score (self-reported by applicant)",
+                "monthly_income":     "Monthly Income (self-reported, $)",
+                "total_monthly_debt": "Monthly Debt Payments (self-reported, $)",
+                "employment_type":    "Employment Type",
+                "years_at_employer":  "Years at Current Employer",
+                "employer_name":      "Employer Name",
+            }
+
+            lines = ["## LOAN APPLICATION (extracted by Document Intelligence)"]
+
+            # Full name
+            first = get_val("first_name") or ""
+            last  = get_val("last_name")  or ""
+            if first or last:
+                lines.append(f"Applicant Full Name: {(first + ' ' + last).strip()}")
+
+            for di_key, agent_label in FIELD_MAP.items():
+                val = get_val(di_key)
+                if val:
+                    lines.append(f"{agent_label}: {val}")
+
+            return "\n".join(lines)
+
+        except ImportError:
+            print("[DI] azure-ai-documentintelligence not installed — falling back")
+        except Exception as e:
+            print(f"[DI] Custom model failed: {e} — falling back")
+
+    # Fallback: plain text read
+    # PDF files cannot be read as plain text — return helpful placeholder
+    if path.suffix.lower() == ".pdf":
+        print(f"[DI] WARNING: {path.name} is PDF but DI did not run — upload .txt version or configure DI endpoint/key")
+        return f"[PDF file {path.name} could not be read — Document Intelligence not configured or failed]"
+    return path.read_text(encoding="utf-8", errors="replace")
+
+# -------------------------------------------------------------------------
 # In-memory session store
 # session_id → { conversation_id, events[], status, vector_store_id, file_ids }
 # -------------------------------------------------------------------------
@@ -270,39 +361,19 @@ def run_workflow_until_approval(session_id, doc_text, uploaded_paths=None):
         with client:
             oc = client.get_openai_client()
 
-            # -- Step A: Upload files to Foundry vector store --
+            # -- Step A: Vector store upload (not needed — doc text is sent directly
+            #            in the conversation, no semantic search required for this workflow)
+            #
+            # FUTURE EXTENSION: Uncomment if you add file_search tool to agents
+            # and want agents to query documents via embeddings/RAG instead of
+            # receiving the full text in the conversation.
+            #
+            # vs = oc.vector_stores.create(name=f"LoanSession-{session_id[:20]}")
+            # for path in uploaded_paths:
+            #     with open(path, "rb") as fh:
+            #         oc.vector_stores.files.upload_and_poll(vector_store_id=vs.id, file=fh)
             vs_id    = None
             file_ids = []
-            if uploaded_paths:
-                try:
-                    emit(session_id, {
-                        "type": "step", "step": "foundry_upload", "status": "active",
-                        "message": "Uploading documents to Microsoft Foundry...",
-                        "timestamp": _utc_ts(),
-                    })
-                    vs = oc.vector_stores.create(name=f"LoanSession-{session_id[:20]}")
-                    vs_id = vs.id
-                    for path in uploaded_paths:
-                        if path and Path(path).exists():
-                            with open(path, "rb") as fh:
-                                vf = oc.vector_stores.files.upload_and_poll(vector_store_id=vs_id, file=fh)
-                            if getattr(vf, "id", None):
-                                file_ids.append(vf.id)
-                    with sessions_lock:
-                        if session_id in sessions:
-                            sessions[session_id]["vector_store_id"] = vs_id
-                            sessions[session_id]["file_ids"]        = file_ids
-                    emit(session_id, {
-                        "type": "step", "step": "foundry_upload", "status": "completed",
-                        "message": f"Documents uploaded to Foundry ({len(file_ids)} files vectorized).",
-                        "timestamp": _utc_ts(),
-                    })
-                except Exception as vs_err:
-                    emit(session_id, {
-                        "type": "step", "step": "foundry_upload", "status": "error",
-                        "message": str(vs_err), "timestamp": _utc_ts(),
-                    })
-                    # Continue — agents will still receive text via the conversation
 
             # -- Step B: Create conversation --
             conv = oc.conversations.create()
@@ -586,7 +657,10 @@ def api_upload():
             f.save(path)
             uploaded_paths.append(path)
             try:
-                parts.append(path.read_text(encoding="utf-8", errors="replace"))
+                # Loan application PDF → Document Intelligence custom model
+                # Income proof → plain text (agent handles any format)
+                is_app = (key == "application")
+                parts.append(extract_text_from_file(path, is_loan_application=is_app))
             except Exception:
                 parts.append(f"[Contents of {f.filename}]")
 
