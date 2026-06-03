@@ -69,7 +69,7 @@ Each agent automatically receives all prior agents' output through the shared co
 | Backend | Python 3 / Flask + Server-Sent Events |
 | Policy Rules | `loan_policies.json` (no database) |
 | Frontend | Vanilla HTML / CSS / JS — Montserrat, dark glassmorphism |
-| Auth | Azure DefaultAzureCredential (managed identity in ACA) |
+| Auth | Azure Managed Identity (RBAC) — passwordless, least-privilege role assignments |
 | Deployment | Azure Container Apps + Azure Container Registry |
 | Secrets | Azure Key Vault |
 
